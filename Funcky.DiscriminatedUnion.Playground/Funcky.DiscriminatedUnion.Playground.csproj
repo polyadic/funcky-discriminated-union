@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>Funcky.DiscriminatedUnion.Playground</AssemblyName>
+        <RootNamespace>Funcky.DiscriminatedUnion.Playground</RootNamespace>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>10.0</LangVersion>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Funcky.DiscriminatedUnion.SourceGeneration\Funcky.DiscriminatedUnion.SourceGeneration.csproj" OutputItemType="Analyzer" />
+    </ItemGroup>
+</Project>
