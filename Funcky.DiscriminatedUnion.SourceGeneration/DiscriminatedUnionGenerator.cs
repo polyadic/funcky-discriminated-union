@@ -9,7 +9,6 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration;
 [Generator]
 public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(context => context.AddSource("DiscriminatedUnionAttribute.g.cs", DiscriminatedUnionAttributeSource));
