@@ -6,7 +6,7 @@ using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
 
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
 
-[Generator]
+[Generator(LanguageNames.CSharp)]
 public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
