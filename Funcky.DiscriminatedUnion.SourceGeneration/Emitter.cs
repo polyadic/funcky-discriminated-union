@@ -58,6 +58,8 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
         {
             using (writer.AutoCloseScopes())
             {
+                writer.WriteLine();
+
                 WriteParentTypes(writer, variant.ParentTypes);
 
                 writer.WriteLine(FormatPartialTypeDeclaration(variant.Type));
@@ -82,9 +84,12 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             => $"void Switch({string.Join(", ", variants.Select(variant => $"global::System.Action<{variant.LocalTypeName}> {FormatVerbatimIdentifier(variant.ParameterName)}"))})";
 
         private static string FormatPartialTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
-            => typeDeclaration is RecordDeclarationSyntax recordDeclaration && recordDeclaration.ClassOrStructKeyword.IsKind(SyntaxKind.None)
-                ? $"partial {typeDeclaration.Keyword} {recordDeclaration.ClassOrStructKeyword} {typeDeclaration.Identifier}{typeDeclaration.TypeParameterList} {typeDeclaration.ConstraintClauses}"
-                : $"partial {typeDeclaration.Keyword} {typeDeclaration.Identifier}{typeDeclaration.TypeParameterList} {typeDeclaration.ConstraintClauses}";
+            => typeDeclaration is RecordDeclarationSyntax recordDeclaration
+                ? CombineTokens("partial", typeDeclaration.Keyword, recordDeclaration.ClassOrStructKeyword, typeDeclaration.Identifier.ToString() + typeDeclaration.TypeParameterList, typeDeclaration.ConstraintClauses)
+                : CombineTokens("partial", typeDeclaration.Keyword, typeDeclaration.Identifier.ToString() + typeDeclaration.TypeParameterList, typeDeclaration.ConstraintClauses);
+
+        private static string CombineTokens(params object[] tokens)
+            => string.Join(" ", tokens.Select(t => t.ToString()).Where(t => !string.IsNullOrEmpty(t)));
 
         private static string FormatVerbatimIdentifier(string identifier)
             => identifier.StartsWith("@")
