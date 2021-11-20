@@ -1,6 +1,10 @@
 # Funcky Discriminated Unions
 A source generator that generates `Match` methods for all your discriminated unions needs. ✨
 
+[![Build](https://github.com/polyadic/funcky-discriminated-union/workflows/Build/badge.svg)](https://github.com/polyadic/funcky-discriminated-union/actions?query=workflow%3ABuild)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-green)](https://raw.githubusercontent.com/polyadic/funcky-discriminated-union/main/license-mit.txt)
+[![Licence: Apache](https://img.shields.io/badge/licence-Apache-green)](https://raw.githubusercontent.com/polyadic/funcky-discriminated-union/main/license-apache.txt)
+
 ## Usage
 Apply the `[DiscriminatedUnion]` to an abstract class (or record) with nested types representing the variants.
 
