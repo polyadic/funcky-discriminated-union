@@ -46,9 +46,9 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
         private static AttributeData ParseAttribute(ITypeSymbol type)
         {
             var attribute = type.GetAttributes().Single(a => a.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)) == AttributeFullName);
-            var nonExhaustive = attribute.NamedArguments.Where(n => n.Key == AttributeProperties.NonExhaustive).Select(n => n.Value.Value).OfType<bool>().SingleOrDefault();
-            var flatten = attribute.NamedArguments.Where(n => n.Key == AttributeProperties.Flatten).Select(n => n.Value.Value).OfType<bool>().SingleOrDefault();
-            var matchResultType = attribute.NamedArguments.Where(n => n.Key == AttributeProperties.MatchResultTypeName).Select(n => n.Value.Value).OfType<string>().SingleOrDefault();
+            var nonExhaustive = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.NonExhaustive);
+            var flatten = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.Flatten);
+            var matchResultType = attribute.GetNamedArgumentOrDefault<string>(AttributeProperties.MatchResultTypeName);
             return new AttributeData(nonExhaustive, flatten, matchResultType);
         }
 
