@@ -12,27 +12,34 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             "#nullable enable\n\n";
 
         public const string DiscriminatedUnionAttributeSource =
-            GeneratedFileHeadersSource +
-            "namespace Funcky\n" +
-            "{\n" +
-            "    [global::System.Diagnostics.Conditional(\"Funcky_DiscriminatedUnion\")]\n" +
-            "    [global::System.AttributeUsage(global::System.AttributeTargets.Class)]\n" +
-            "    internal sealed class DiscriminatedUnionAttribute : global::System.Attribute\n" +
-            "    {\n" +
-            "        /// <summary>Allow only consumers in the same assembly to use the exhaustive <c>Match</c> and <c>Switch</c> methods.</summary>\n" +
-            "        public bool NonExhaustive { get; set; }\n" +
-            "\n" +
-            "        /// <summary>Generates exhaustive <c>Match</c> and <c>Switch</c> methods for the entire type hierarchy.</summary>\n" +
-            "        public bool Flatten { get; set; }\n" +
-            "\n" +
-            "        /// <summary>Customized the generic type name used for the result in the generated <c>Match</c> methods. Defaults to <c>TResult</c>.</summary>\n" +
-            "        public string? MatchResultTypeName { get; set; }\n" +
-            "    }\n" +
-            "}\n";
+            $"{GeneratedFileHeadersSource}" +
+            $"namespace Funcky\n" +
+            $"{{\n" +
+            $"    [global::System.Diagnostics.Conditional(\"Funcky_DiscriminatedUnion\")]\n" +
+            $"    [global::System.AttributeUsage(global::System.AttributeTargets.Class)]\n" +
+            $"    internal sealed class DiscriminatedUnionAttribute : global::System.Attribute\n" +
+            $"    {{\n" +
+            $"        /// <summary>Allow only consumers in the same assembly to use the exhaustive <c>Match</c> and <c>Switch</c> methods.</summary>\n" +
+            $"        public bool {AttributeProperties.NonExhaustive} {{ get; set; }}\n" +
+            $"\n" +
+            $"        /// <summary>Generates exhaustive <c>Match</c> and <c>Switch</c> methods for the entire type hierarchy.</summary>\n" +
+            $"        public bool {AttributeProperties.Flatten} {{ get; set; }}\n" +
+            $"\n" +
+            $"        /// <summary>Customized the generic type name used for the result in the generated <c>Match</c> methods. Defaults to <c>TResult</c>.</summary>\n" +
+            $"        public string? {AttributeProperties.MatchResultTypeName} {{ get; set; }}\n" +
+            $"    }}\n" +
+            $"}}\n";
 
         private static readonly AssemblyName GeneratorAssemblyName = typeof(DiscriminatedUnionGenerator).Assembly.GetName();
         public static readonly string GeneratedCodeAttributeSource = $"[global::System.CodeDom.Compiler.GeneratedCode(" +
             $"{Literal(GeneratorAssemblyName.Name)}, " +
             $"{Literal(GeneratorAssemblyName.Version.ToString())})]";
+
+        public static class AttributeProperties
+        {
+            public const string NonExhaustive = "NonExhaustive";
+            public const string Flatten = "Flatten";
+            public const string MatchResultTypeName = "MatchResultTypeName";
+        }
     }
 }
