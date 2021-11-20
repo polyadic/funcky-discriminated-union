@@ -7,7 +7,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
         IReadOnlyList<TypeDeclarationSyntax> ParentTypes,
         string? Namespace,
         string MethodVisibility,
-        string ResultGenericTypeName,
+        string MatchResultType,
         IReadOnlyList<DiscriminatedUnionVariant> Variants);
 
     internal sealed record DiscriminatedUnionVariant(

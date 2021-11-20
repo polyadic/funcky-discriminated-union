@@ -23,7 +23,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 writer.WriteLine(FormatPartialTypeDeclaration(discriminatedUnion.Type));
                 writer.OpenScope();
 
-                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.ResultGenericTypeName, discriminatedUnion.Variants)};");
+                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultType, discriminatedUnion.Variants)};");
                 writer.WriteLine();
                 WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)};");
 
@@ -63,7 +63,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 writer.WriteLine(FormatPartialTypeDeclaration(variant.Type));
                 writer.OpenScope();
 
-                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.ResultGenericTypeName, discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
+                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultType, discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
                 writer.WriteLine();
                 WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
             }
@@ -76,7 +76,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
         }
 
         private static string FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)
-            => $"TResult Match<{genericTypeName}>({string.Join(", ", variants.Select(variant => $"global::System.Func<{variant.LocalTypeName}, {genericTypeName}> {FormatVerbatimIdentifier(variant.ParameterName)}"))})";
+            => $"{genericTypeName} Match<{genericTypeName}>({string.Join(", ", variants.Select(variant => $"global::System.Func<{variant.LocalTypeName}, {genericTypeName}> {FormatVerbatimIdentifier(variant.ParameterName)}"))})";
 
         private static string FormatSwitchMethodDeclaration(IEnumerable<DiscriminatedUnionVariant> variants)
             => $"void Switch({string.Join(", ", variants.Select(variant => $"global::System.Action<{variant.LocalTypeName}> {FormatVerbatimIdentifier(variant.ParameterName)}"))})";

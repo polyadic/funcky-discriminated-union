@@ -154,3 +154,9 @@ public static class NestedUnionTest
         nested.Switch(variant: v => Console.WriteLine(v));
     }
 }
+
+[Funcky.DiscriminatedUnion(MatchResultType = "TMatchResult")]
+public abstract partial record UnionWithConflictingGenericType<TResult>
+{
+    public sealed partial record Variant : UnionWithConflictingGenericType<TResult>;
+}

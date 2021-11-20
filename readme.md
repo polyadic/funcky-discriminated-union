@@ -28,6 +28,25 @@ The attribute allows configuration of some aspects of source generation.
 The auto-generated `Match` and `Switch` methods are public by default.
 When `NonExhaustive` is set to `true`, these methods are generated with `internal` visibility instead.
 
+### `MatchResultType`
+The auto-generated `Match` method uses a generic type for the result. This type is named `TResult` by default.
+This can cause conflict with generic types on the discriminated union itself. Use `MatchResultType` to set a custom name for this type.
+
+```cs
+using Funcky;
+
+[DiscriminatedUnion(MatchResultType = "TMatchResult")]
+public abstract partial record Result<TResult> { ... }
+
+// Generated code
+partial record Result<TResult>
+{
+    public abstract TMatchResult Match<TMatchResult>(...);
+
+    ...
+}
+```
+
 ### `Flatten`
 The auto-generated `Match` and `Switch` methods only accept one level of inheritance by default.
 Set `Flatten` to `true` to include arbitrarily deep inherited types in these methods.

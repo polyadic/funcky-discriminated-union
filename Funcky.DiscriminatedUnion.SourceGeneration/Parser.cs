@@ -29,14 +29,14 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 return null;
             }
 
-            var (nonExhaustive, flatten) = ParseAttribute(typeSymbol);
+            var (nonExhaustive, flatten, matchResultType) = ParseAttribute(typeSymbol);
             var isVariant = flatten ? IsVariantOfDiscriminatedUnionFlattened(typeSymbol, semanticModel) : IsVariantOfDiscriminatedUnion(typeSymbol, semanticModel);
 
             return new DiscriminatedUnion(
                 Type: typeDeclaration,
                 ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().ToList(),
                 Namespace: FormatNamespace(typeSymbol),
-                ResultGenericTypeName: "TResult", // TODO: unique identifier for generic type
+                MatchResultType: matchResultType ?? "TResult",
                 MethodVisibility: nonExhaustive ? "internal" : "public",
                 Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
                     .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel))
@@ -48,7 +48,8 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             var attribute = type.GetAttributes().Single(a => a.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)) == AttributeFullName);
             var nonExhaustive = attribute.NamedArguments.Where(n => n.Key == "NonExhaustive").Select(n => n.Value.Value).OfType<bool>().SingleOrDefault();
             var flatten = attribute.NamedArguments.Where(n => n.Key == "Flatten").Select(n => n.Value.Value).OfType<bool>().SingleOrDefault();
-            return new AttributeData(nonExhaustive, flatten);
+            var matchResultType = attribute.NamedArguments.Where(n => n.Key == "MatchResultType").Select(n => n.Value.Value).OfType<string>().SingleOrDefault();
+            return new AttributeData(nonExhaustive, flatten, matchResultType);
         }
 
         private static string? FormatNamespace(INamedTypeSymbol typeSymbol)
@@ -100,7 +101,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 => context.SemanticModel.GetSymbolInfo(attribute, cancellationToken).Symbol is IMethodSymbol attributeSymbol
                     && attributeSymbol.ContainingType.ToDisplayString() == AttributeFullName;
 
-        private sealed record AttributeData(bool NonExhaustive, bool Flatten);
+        private sealed record AttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
 
         private sealed class VariantCollectingVisitor : CSharpSyntaxWalker
         {

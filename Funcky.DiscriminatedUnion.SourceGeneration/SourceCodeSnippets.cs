@@ -24,6 +24,9 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             "\n" +
             "        /// <summary>Generates exhaustive <c>Match</c> methods for the entire type hierarchy.</summary>\n" +
             "        public bool Flatten { get; set; }\n" +
+            "\n" +
+            "        /// <summary>Customized the generic type name used for the result in the generated <c>Match</c> methods. Defaults to <c>TResult</c>.</summary>\n" +
+            "        public string? MatchResultType { get; set; }\n" +
             "    }\n" +
             "}\n";
 
