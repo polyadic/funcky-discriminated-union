@@ -7,9 +7,35 @@
         <Nullable>enable</Nullable>
         <LangVersion>10.0</LangVersion>
     </PropertyGroup>
+    <PropertyGroup Label="NuGet Metadata">
+        <Version>0.1.0</Version>
+        <PackageId>Funcky.DiscriminatedUnion</PackageId>
+        <Authors>Polyadic</Authors>
+        <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/polyadic/funcky-discriminated-union</PackageProjectUrl>
+        <Description>A source generator that generates `Match` methods for all your discriminated unions needs. ✨</Description>
+        <PackageTags>Funcky Discriminated Tagged Union Algebraic</PackageTags>
+    </PropertyGroup>
+    <PropertyGroup Label="Packaging">
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
+    <Target Name="_AddAnalyzerToNugetPackage" BeforeTargets="GenerateNuspec">
+        <ItemGroup>
+            <_PackageFiles Include="$(OutputPath)\$(AssemblyName).dll" PackagePath="analyzers/dotnet/cs" />
+        </ItemGroup>
+    </Target>
+    <PropertyGroup Label="Deterministic Builds and Source Link">
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
+    <ItemGroup Label="Deterministic Builds and Source Link">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
-      <PackageReference Include="IsExternalInit" Version="1.0.1" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
+        <PackageReference Include="IsExternalInit" Version="1.0.1" PrivateAssets="all" />
     </ItemGroup>
 </Project>
