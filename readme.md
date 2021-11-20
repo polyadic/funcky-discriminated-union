@@ -25,6 +25,11 @@ public abstract partial record Result<T>
 }
 ```
 
+## Minimum Required Versions
+* Visual Studio 2022
+* Roslyn 4.0.0
+* .NET 6
+
 ## Settings
 The attribute allows configuration of some aspects of source generation.
 
