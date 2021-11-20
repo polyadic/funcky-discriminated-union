@@ -19,10 +19,10 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             "    [global::System.AttributeUsage(global::System.AttributeTargets.Class)]\n" +
             "    internal sealed class DiscriminatedUnionAttribute : global::System.Attribute\n" +
             "    {\n" +
-            "        /// <summary>Allow only consumers in the same assembly to use the exhaustive <c>Match</c> methods.</summary>\n" +
+            "        /// <summary>Allow only consumers in the same assembly to use the exhaustive <c>Match</c> and <c>Switch</c> methods.</summary>\n" +
             "        public bool NonExhaustive { get; set; }\n" +
             "\n" +
-            "        /// <summary>Generates exhaustive <c>Match</c> methods for the entire type hierarchy.</summary>\n" +
+            "        /// <summary>Generates exhaustive <c>Match</c> and <c>Switch</c> methods for the entire type hierarchy.</summary>\n" +
             "        public bool Flatten { get; set; }\n" +
             "\n" +
             "        /// <summary>Customized the generic type name used for the result in the generated <c>Match</c> methods. Defaults to <c>TResult</c>.</summary>\n" +
