@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_NOLOGO: 1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+      name: Install Current .NET SDK
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore /p:TreatWarningsAsErrors=true
+    - name: Run Tests
+      run: dotnet test --configuration Release --no-build
+
+  nupkg:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+      name: Install Current .NET SDK
+    - name: Generate NuGet Packages
+      run: dotnet pack --configuration Release --output nupkg
+    - uses: actions/upload-artifact@v2
+      if: success() && github.ref == 'refs/heads/main'
+      with:
+        name: nupkg
+        path: nupkg/*
+        retention-days: 1
