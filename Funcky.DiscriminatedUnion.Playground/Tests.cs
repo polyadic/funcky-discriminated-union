@@ -160,3 +160,15 @@ public abstract partial record UnionWithConflictingGenericType<TResult>
 {
     public sealed partial record Variant : UnionWithConflictingGenericType<TResult>;
 }
+
+namespace Foo
+{
+    namespace Bar
+    {
+        [Funcky.DiscriminatedUnion]
+        public abstract partial record NestedUnion
+        {
+            public sealed partial record Variant : NestedUnion;
+        }
+    }
+}
