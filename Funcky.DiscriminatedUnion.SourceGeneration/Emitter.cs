@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.CodeDom.Compiler;
 using System.Text;
@@ -64,9 +65,9 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 writer.WriteLine(FormatPartialTypeDeclaration(variant.Type));
                 writer.OpenScope();
 
-                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
+                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
                 writer.WriteLine();
-                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
+                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
             }
         }
 
@@ -77,10 +78,10 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
         }
 
         private static string FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)
-            => $"{genericTypeName} Match<{genericTypeName}>({string.Join(", ", variants.Select(variant => $"global::System.Func<{variant.LocalTypeName}, {genericTypeName}> {FormatVerbatimIdentifier(variant.ParameterName)}"))})";
+            => $"{genericTypeName} Match<{genericTypeName}>({string.Join(", ", variants.Select(variant => $"global::System.Func<{variant.LocalTypeName}, {genericTypeName}> {FormatIdentifier(variant.ParameterName)}"))})";
 
         private static string FormatSwitchMethodDeclaration(IEnumerable<DiscriminatedUnionVariant> variants)
-            => $"void Switch({string.Join(", ", variants.Select(variant => $"global::System.Action<{variant.LocalTypeName}> {FormatVerbatimIdentifier(variant.ParameterName)}"))})";
+            => $"void Switch({string.Join(", ", variants.Select(variant => $"global::System.Action<{variant.LocalTypeName}> {FormatIdentifier(variant.ParameterName)}"))})";
 
         private static string FormatPartialTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
             => typeDeclaration is RecordDeclarationSyntax recordDeclaration
@@ -90,9 +91,10 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
         private static string CombineTokens(params object[] tokens)
             => string.Join(" ", tokens.Select(t => t.ToString()).Where(t => !string.IsNullOrEmpty(t)));
 
-        private static string FormatVerbatimIdentifier(string identifier)
-            => identifier.StartsWith("@")
-                 ? identifier
-                 : '@' + identifier;
-    }    
+        private static string FormatIdentifier(string identifier)
+            => IsIdentifier(identifier) ? '@' + identifier : identifier;
+
+        private static bool IsIdentifier(string identifier)
+            => SyntaxFacts.GetKeywordKind(identifier) != SyntaxKind.None;
+    }
 }

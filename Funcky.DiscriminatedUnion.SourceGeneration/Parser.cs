@@ -56,11 +56,15 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             => typeSymbol.ContainingNamespace?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted));
 
         private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, SemanticModel semanticModel)
-            => typeDeclaration => new DiscriminatedUnionVariant(
-                typeDeclaration,
-                ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discrimatedUnionTypeDeclaration).ToList(),
-                ParameterName: FormatParameterName(typeDeclaration),
-                LocalTypeName: semanticModel.GetDeclaredSymbol(typeDeclaration)!.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discrimatedUnionTypeDeclaration.SpanStart));
+            => typeDeclaration =>
+            {
+                var symbol = semanticModel.GetDeclaredSymbol(typeDeclaration)!;
+                return new DiscriminatedUnionVariant(
+                    typeDeclaration,
+                    ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discrimatedUnionTypeDeclaration).ToList(),
+                    ParameterName: FormatParameterName(symbol),
+                    LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discrimatedUnionTypeDeclaration.SpanStart));
+            };
 
         private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
         {
@@ -88,8 +92,8 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             }
         }
 
-        private static string FormatParameterName(TypeDeclarationSyntax variant)
-            => LowerCaseFirst(variant.Identifier.ToString());
+        private static string FormatParameterName(ITypeSymbol variant)
+            => LowerCaseFirst(variant.Name);
 
         private static string LowerCaseFirst(string input) => char.ToLowerInvariant(input.First()) + input.Substring(1);
 
