@@ -15,11 +15,15 @@
         <PackageProjectUrl>https://github.com/polyadic/funcky-discriminated-union</PackageProjectUrl>
         <Description>A source generator that generates `Match` methods for all your discriminated unions needs. ✨</Description>
         <PackageTags>Funcky Discriminated Tagged Union Algebraic</PackageTags>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
     </PropertyGroup>
     <PropertyGroup Label="Packaging">
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
+     <ItemGroup Label="Packaging">
+        <None Include="..\readme.md" Link="readme.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
     <Target Name="_AddAnalyzerToNugetPackage" BeforeTargets="GenerateNuspec">
         <ItemGroup>
             <_PackageFiles Include="$(OutputPath)\$(AssemblyName).dll" PackagePath="analyzers/dotnet/cs" />
