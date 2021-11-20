@@ -36,7 +36,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 Type: typeDeclaration,
                 ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().ToList(),
                 Namespace: FormatNamespace(typeSymbol),
-                MatchResultType: matchResultType ?? "TResult",
+                MatchResultTypeName: matchResultType ?? "TResult",
                 MethodVisibility: nonExhaustive ? "internal" : "public",
                 Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
                     .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel))
@@ -48,7 +48,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
             var attribute = type.GetAttributes().Single(a => a.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)) == AttributeFullName);
             var nonExhaustive = attribute.NamedArguments.Where(n => n.Key == "NonExhaustive").Select(n => n.Value.Value).OfType<bool>().SingleOrDefault();
             var flatten = attribute.NamedArguments.Where(n => n.Key == "Flatten").Select(n => n.Value.Value).OfType<bool>().SingleOrDefault();
-            var matchResultType = attribute.NamedArguments.Where(n => n.Key == "MatchResultType").Select(n => n.Value.Value).OfType<string>().SingleOrDefault();
+            var matchResultType = attribute.NamedArguments.Where(n => n.Key == "MatchResultTypeName").Select(n => n.Value.Value).OfType<string>().SingleOrDefault();
             return new AttributeData(nonExhaustive, flatten, matchResultType);
         }
 

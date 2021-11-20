@@ -155,7 +155,7 @@ public static class NestedUnionTest
     }
 }
 
-[Funcky.DiscriminatedUnion(MatchResultType = "TMatchResult")]
+[Funcky.DiscriminatedUnion(MatchResultTypeName = "TMatchResult")]
 public abstract partial record UnionWithConflictingGenericType<TResult>
 {
     public sealed partial record Variant : UnionWithConflictingGenericType<TResult>;

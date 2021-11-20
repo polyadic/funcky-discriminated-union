@@ -23,7 +23,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 writer.WriteLine(FormatPartialTypeDeclaration(discriminatedUnion.Type));
                 writer.OpenScope();
 
-                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultType, discriminatedUnion.Variants)};");
+                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)};");
                 writer.WriteLine();
                 WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)};");
 
@@ -65,7 +65,7 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration
                 writer.WriteLine(FormatPartialTypeDeclaration(variant.Type));
                 writer.OpenScope();
 
-                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultType, discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
+                WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
                 writer.WriteLine();
                 WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)} => {FormatVerbatimIdentifier(variant.ParameterName)}(this);");
             }
