@@ -1,40 +1,39 @@
 using System.CodeDom.Compiler;
 
-namespace Funcky.DiscriminatedUnion.SourceGeneration
+namespace Funcky.DiscriminatedUnion.SourceGeneration;
+
+internal static class IndentedTextWriterExtensions
 {
-    internal static class IndentedTextWriterExtensions
+    public static IDisposable AutoCloseScopes(this IndentedTextWriter writer)
     {
-        public static IDisposable AutoCloseScopes(this IndentedTextWriter writer)
+        var indent = writer.Indent;
+        return new LambdaDisposable(() =>
         {
-            var indent = writer.Indent;
-            return new LambdaDisposable(() =>
+            while (writer.Indent > indent)
             {
-                while (writer.Indent > indent)
-                {
-                    writer.CloseScope();
-                }
-            });
-        }
+                writer.CloseScope();
+            }
+        });
+    }
 
-        public static void OpenScope(this IndentedTextWriter writer)
-        {
-            writer.WriteLine("{");
-            writer.Indent++;
-        }
+    public static void OpenScope(this IndentedTextWriter writer)
+    {
+        writer.WriteLine("{");
+        writer.Indent++;
+    }
 
-        private static void CloseScope(this IndentedTextWriter writer)
-        {
-            writer.Indent--;
-            writer.WriteLine("}");
-        }
+    private static void CloseScope(this IndentedTextWriter writer)
+    {
+        writer.Indent--;
+        writer.WriteLine("}");
+    }
 
-        private sealed class LambdaDisposable : IDisposable
-        {
-            private readonly Action _disposeAction;
+    private sealed class LambdaDisposable : IDisposable
+    {
+        private readonly Action _disposeAction;
 
-            public LambdaDisposable(Action disposeAction) => _disposeAction = disposeAction;
+        public LambdaDisposable(Action disposeAction) => _disposeAction = disposeAction;
 
-            public void Dispose() => _disposeAction();
-        }
+        public void Dispose() => _disposeAction();
     }
 }
