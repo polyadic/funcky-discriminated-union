@@ -21,6 +21,15 @@ public sealed class SourceGeneratorTest
     [InlineData("NonExhaustive")]
     public async Task GeneratesExpectedSourceCode(string sourceFileName) => await Verify(sourceFileName);
 
+    [Fact]
+    public void DoesNotEmitSourceFileWhenNoUnionsAreDefined()
+    {
+        var compilation = CreateCompilation();
+        var driver = RunGenerator(compilation, out var outputCompilation);
+        Assert.Empty(outputCompilation.GetDiagnostics());
+        Assert.Single(driver.GetRunResult().GeneratedTrees);
+    }
+
     private static async Task Verify(string sourceFileName)
     {
         var filePath = $"Sources/{sourceFileName}.cs";
