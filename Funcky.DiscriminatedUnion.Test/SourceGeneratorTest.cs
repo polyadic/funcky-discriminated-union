@@ -6,17 +6,28 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Funcky.DiscriminatedUnion.Test;
 
 [UsesVerify]
-public class SourceGeneratorTest
+public sealed class SourceGeneratorTest
 {
-    [Fact]
-    public async Task GeneratesCorrectly() => await Verify("Sources/IntegrationTest.cs");
+    [Theory]
+    [InlineData("LogicallyNestedUnionWithFlatten")]
+    [InlineData("LogicallyAndSyntacticallyNestedUnion")]
+    [InlineData("LogicallyAndSyntacticallyNestedUnionWithFlatten")]
+    [InlineData("UnionWithConflictingResultTypeName")]
+    [InlineData("EmptyUnion")]
+    [InlineData("KeywordsAsParameterNames")]
+    [InlineData("UnionNestedInMultipleNamespaces")]
+    [InlineData("GenericUnion")]
+    [InlineData("DeeplyNestedUnion")]
+    [InlineData("NonExhaustive")]
+    public async Task GeneratesExpectedSourceCode(string sourceFileName) => await Verify(sourceFileName);
 
-    private static async Task Verify(string testName)
+    private static async Task Verify(string sourceFileName)
     {
-        var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(await File.ReadAllTextAsync(testName)));
+        var filePath = $"Sources/{sourceFileName}.cs";
+        var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(await File.ReadAllTextAsync(filePath)));
         var driver = RunGenerator(compilation, out var outputCompilation);
         Assert.Empty(outputCompilation.GetDiagnostics());
-        await Verifier.Verify(driver);
+        await Verifier.Verify(driver).UseParameters(sourceFileName);
     }
 
     private static GeneratorDriver RunGenerator(CSharpCompilation compilation, out Compilation outputCompilation)
