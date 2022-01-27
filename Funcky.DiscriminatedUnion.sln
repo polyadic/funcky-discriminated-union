@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Funcky.DiscriminatedUnion.SourceGeneration", "Funcky.DiscriminatedUnion.SourceGeneration\Funcky.DiscriminatedUnion.SourceGeneration.csproj", "{AD99AE91-6642-4F3C-BD3C-DBF066BD02F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Funcky.DiscriminatedUnion.Playground", "Funcky.DiscriminatedUnion.Playground\Funcky.DiscriminatedUnion.Playground.csproj", "{4E8E13D9-25A8-474B-AF19-6DE492041F22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Funcky.DiscriminatedUnion.Test", "Funcky.DiscriminatedUnion.Test\Funcky.DiscriminatedUnion.Test.csproj", "{B4C3E53F-75BB-4FD4-AF8B-9F715C423766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{AD99AE91-6642-4F3C-BD3C-DBF066BD02F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD99AE91-6642-4F3C-BD3C-DBF066BD02F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD99AE91-6642-4F3C-BD3C-DBF066BD02F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E8E13D9-25A8-474B-AF19-6DE492041F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E8E13D9-25A8-474B-AF19-6DE492041F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E8E13D9-25A8-474B-AF19-6DE492041F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E8E13D9-25A8-474B-AF19-6DE492041F22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4C3E53F-75BB-4FD4-AF8B-9F715C423766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4C3E53F-75BB-4FD4-AF8B-9F715C423766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4C3E53F-75BB-4FD4-AF8B-9F715C423766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4C3E53F-75BB-4FD4-AF8B-9F715C423766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
