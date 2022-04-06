@@ -6,6 +6,9 @@ A source generator that generates `Match` methods for all your discriminated uni
 [![Licence: MIT](https://img.shields.io/badge/licence-MIT-green)](https://raw.githubusercontent.com/polyadic/funcky-discriminated-union/main/license-mit.txt)
 [![Licence: Apache](https://img.shields.io/badge/licence-Apache-green)](https://raw.githubusercontent.com/polyadic/funcky-discriminated-union/main/license-apache.txt)
 
+## Installation
+Add `<ProjectReference Include="Funcky.DiscriminatedUnion" Version="..." PrivateAssets="all" />` to your project file.
+
 ## Usage
 Apply the `[DiscriminatedUnion]` to an abstract class (or record) with nested types representing the variants.
 
