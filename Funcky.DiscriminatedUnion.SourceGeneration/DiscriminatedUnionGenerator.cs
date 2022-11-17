@@ -38,7 +38,7 @@ public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
     }
 
     private static string? Emit(TypeDeclarationSyntax typeDeclaration, Compilation compilation, CancellationToken cancellationToken)
-        => GetDiscriminatedUnionToEmit(typeDeclaration, compilation, cancellationToken) is { } discrimatedUnion
-            ? EmitDiscriminatedUnion(discrimatedUnion)
+        => GetDiscriminatedUnionToEmit(typeDeclaration, compilation, cancellationToken) is { } discriminatedUnion
+            ? EmitDiscriminatedUnion(discriminatedUnion)
             : null;
 }
