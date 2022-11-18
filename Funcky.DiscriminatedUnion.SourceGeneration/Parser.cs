@@ -84,8 +84,8 @@ internal static class Parser
             && SymbolEqualityComparer.Default.Equals(symbol.BaseType, discriminatedUnionType);
 
     private static Func<TypeDeclarationSyntax, bool> IsVariantOfDiscriminatedUnionFlattened(ITypeSymbol discriminatedUnionType, SemanticModel semanticModel)
-        => node => semanticModel.GetDeclaredSymbol(node) is ITypeSymbol symbol
-                && !symbol.IsAbstract
+        => node
+            => semanticModel.GetDeclaredSymbol(node) is ITypeSymbol { IsAbstract: false } symbol
                 && GetBaseTypes(symbol).Any(t => SymbolEqualityComparer.Default.Equals(t, discriminatedUnionType));
 
     private static IEnumerable<ITypeSymbol> GetBaseTypes(ITypeSymbol symbol)
