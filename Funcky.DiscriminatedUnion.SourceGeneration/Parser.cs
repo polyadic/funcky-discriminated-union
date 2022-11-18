@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -69,6 +70,7 @@ internal static class Parser
                 ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discriminatedUnionTypeDeclaration).ToList(),
                 ParameterName: FormatParameterName(symbol),
                 LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discriminatedUnionTypeDeclaration.SpanStart),
+                TypeOfTypeName: ToTypeNameSuitableForTypeOf(symbol),
                 JsonDerivedTypeDiscriminator: symbol.Name);
         };
 
@@ -102,6 +104,13 @@ internal static class Parser
         => LowerCaseFirst(variant.Name);
 
     private static string LowerCaseFirst(string input) => char.ToLowerInvariant(input.First()) + input.Substring(1);
+
+    private static string ToTypeNameSuitableForTypeOf(INamedTypeSymbol type)
+        => type
+            .ToDisplayParts(SymbolDisplayFormat.FullyQualifiedFormat)
+            .Where(part => part.Kind != SymbolDisplayPartKind.TypeParameterName)
+            .ToImmutableArray()
+            .ToDisplayString();
 
     private static Func<AttributeListSyntax, bool> HasDiscriminatedUnionAttribute(GeneratorSyntaxContext context, CancellationToken cancellationToken)
         => attributeList => attributeList.Attributes.Any(IsDiscriminatedUnionAttribute(context, cancellationToken));

@@ -91,7 +91,7 @@ internal static class Emitter
 
     private static void WriteJsonDerivedTypeAttribute(IndentedTextWriter writer, DiscriminatedUnionVariant variant)
     {
-        writer.WriteLine($"[global::System.Text.Json.Serialization.JsonDerivedType(typeof({variant.LocalTypeName}), {SyntaxFactory.Literal(variant.JsonDerivedTypeDiscriminator)})]");
+        writer.WriteLine($"[global::System.Text.Json.Serialization.JsonDerivedType(typeof({variant.TypeOfTypeName}), {SyntaxFactory.Literal(variant.JsonDerivedTypeDiscriminator)})]");
     }
 
     private static string FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)
