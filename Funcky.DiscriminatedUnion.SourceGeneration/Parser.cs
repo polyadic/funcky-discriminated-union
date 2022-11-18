@@ -8,8 +8,8 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration;
 internal static class Parser
 {
     public static bool IsSyntaxTargetForGeneration(SyntaxNode node)
-        => node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } }
-                or RecordDeclarationSyntax { AttributeLists: { Count: > 0 } };
+        => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
+                or RecordDeclarationSyntax { AttributeLists.Count: > 0 };
 
     public static TypeDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
