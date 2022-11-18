@@ -8,10 +8,12 @@ internal sealed record DiscriminatedUnion(
     string? Namespace,
     string MethodVisibility,
     string MatchResultTypeName,
+    bool GenerateJsonDerivedTypeAttributes, // TODO: include a list of already present JsonDerivedTypes
     IReadOnlyList<DiscriminatedUnionVariant> Variants);
 
 internal sealed record DiscriminatedUnionVariant(
     TypeDeclarationSyntax Type,
     IReadOnlyList<TypeDeclarationSyntax> ParentTypes,
     string ParameterName,
-    string LocalTypeName);
+    string LocalTypeName,
+    string JsonDerivedTypeDiscriminator);

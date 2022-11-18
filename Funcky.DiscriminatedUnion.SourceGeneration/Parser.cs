@@ -2,11 +2,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
+using CodeAnalysisAttributeData = Microsoft.CodeAnalysis.AttributeData; // TODO: rename our internal AttributeData
 
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
 
 internal static class Parser
 {
+    private const string JsonPolymorphicAttributeName = "System.Text.Json.Serialization.JsonPolymorphicAttribute";
+    private const string JsonDerivedTypeAttributeName = "System.Text.Json.Serialization.JsonDerivedTypeAttribute";
+
     public static bool IsSyntaxTargetForGeneration(SyntaxNode node)
         => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
                 or RecordDeclarationSyntax { AttributeLists.Count: > 0 };
@@ -38,6 +42,7 @@ internal static class Parser
             Namespace: FormatNamespace(typeSymbol),
             MatchResultTypeName: matchResultType ?? "TResult",
             MethodVisibility: nonExhaustive ? "internal" : "public",
+            GenerateJsonDerivedTypeAttributes: typeSymbol.GetAttributes().Any(IsJsonPolymorphicAttribute),
             Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
                 .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel))
                 .ToList());
@@ -63,7 +68,8 @@ internal static class Parser
                 typeDeclaration,
                 ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discrimatedUnionTypeDeclaration).ToList(),
                 ParameterName: FormatParameterName(symbol),
-                LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discrimatedUnionTypeDeclaration.SpanStart));
+                LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discrimatedUnionTypeDeclaration.SpanStart),
+                JsonDerivedTypeDiscriminator: symbol.Name);
         };
 
     private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
@@ -104,6 +110,9 @@ internal static class Parser
         => attribute
             => context.SemanticModel.GetSymbolInfo(attribute, cancellationToken).Symbol is IMethodSymbol attributeSymbol
                 && attributeSymbol.ContainingType.ToDisplayString() == AttributeFullName;
+
+    private static bool IsJsonPolymorphicAttribute(CodeAnalysisAttributeData attribute)
+        => attribute.AttributeClass?.ToDisplayString() is JsonPolymorphicAttributeName or JsonDerivedTypeAttributeName;
 
     private sealed record AttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
 
