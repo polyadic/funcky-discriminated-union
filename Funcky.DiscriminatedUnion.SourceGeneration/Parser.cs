@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
-using CodeAnalysisAttributeData = Microsoft.CodeAnalysis.AttributeData; // TODO: rename our internal AttributeData
 
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
 
@@ -49,13 +48,13 @@ internal static class Parser
                 .ToList());
     }
 
-    private static AttributeData ParseAttribute(ITypeSymbol type)
+    private static DiscriminatedUnionAttributeData ParseAttribute(ITypeSymbol type)
     {
         var attribute = type.GetAttributes().Single(a => a.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)) == AttributeFullName);
         var nonExhaustive = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.NonExhaustive);
         var flatten = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.Flatten);
         var matchResultType = attribute.GetNamedArgumentOrDefault<string>(AttributeProperties.MatchResultTypeName);
-        return new AttributeData(nonExhaustive, flatten, matchResultType);
+        return new DiscriminatedUnionAttributeData(nonExhaustive, flatten, matchResultType);
     }
 
     private static string? FormatNamespace(INamedTypeSymbol typeSymbol)
@@ -120,10 +119,10 @@ internal static class Parser
             => context.SemanticModel.GetSymbolInfo(attribute, cancellationToken).Symbol is IMethodSymbol attributeSymbol
                 && attributeSymbol.ContainingType.ToDisplayString() == AttributeFullName;
 
-    private static bool IsJsonPolymorphicAttribute(CodeAnalysisAttributeData attribute)
+    private static bool IsJsonPolymorphicAttribute(AttributeData attribute)
         => attribute.AttributeClass?.ToDisplayString() is JsonPolymorphicAttributeName or JsonDerivedTypeAttributeName;
 
-    private sealed record AttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
+    private sealed record DiscriminatedUnionAttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
 
     private sealed class VariantCollectingVisitor : CSharpSyntaxWalker
     {
