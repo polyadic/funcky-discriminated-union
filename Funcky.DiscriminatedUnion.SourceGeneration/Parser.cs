@@ -60,22 +60,22 @@ internal static class Parser
     private static string? FormatNamespace(INamedTypeSymbol typeSymbol)
         => typeSymbol.ContainingNamespace?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted));
 
-    private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, SemanticModel semanticModel)
+    private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(TypeDeclarationSyntax discriminatedUnionTypeDeclaration, SemanticModel semanticModel)
         => typeDeclaration =>
         {
             var symbol = semanticModel.GetDeclaredSymbol(typeDeclaration)!;
             return new DiscriminatedUnionVariant(
                 typeDeclaration,
-                ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discrimatedUnionTypeDeclaration).ToList(),
+                ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discriminatedUnionTypeDeclaration).ToList(),
                 ParameterName: FormatParameterName(symbol),
-                LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discrimatedUnionTypeDeclaration.SpanStart),
+                LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discriminatedUnionTypeDeclaration.SpanStart),
                 JsonDerivedTypeDiscriminator: symbol.Name);
         };
 
-    private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
+    private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discriminatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
     {
         var visitor = new VariantCollectingVisitor(isVariant);
-        discrimatedUnionTypeDeclaration.Accept(visitor);
+        discriminatedUnionTypeDeclaration.Accept(visitor);
         return visitor.Variants;
     }
 
