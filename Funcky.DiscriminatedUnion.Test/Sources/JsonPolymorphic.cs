@@ -21,3 +21,15 @@ public partial class Nesting1<A, B, C>
         }
     }
 }
+
+[Funcky.DiscriminatedUnion]
+[System.Text.Json.Serialization.JsonDerivedType(typeof(Rectangle), typeDiscriminator: 1)]
+[System.Text.Json.Serialization.JsonDerivedType(typeof(Circle), typeDiscriminator: "⏺")]
+public abstract partial record Shape
+{
+    public sealed partial record Rectangle(double Width, double Length) : Shape;
+
+    public sealed partial record Circle(double Radius) : Shape;
+
+    public partial record EquilateralTriangle(double SideLength) : Shape;
+}

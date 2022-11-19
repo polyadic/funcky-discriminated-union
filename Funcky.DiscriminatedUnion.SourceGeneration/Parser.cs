@@ -6,11 +6,8 @@ using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
 
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
 
-internal static class Parser
+internal static partial class Parser
 {
-    private const string JsonPolymorphicAttributeName = "System.Text.Json.Serialization.JsonPolymorphicAttribute";
-    private const string JsonDerivedTypeAttributeName = "System.Text.Json.Serialization.JsonDerivedTypeAttribute";
-
     public static bool IsSyntaxTargetForGeneration(SyntaxNode node)
         => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
                 or RecordDeclarationSyntax { AttributeLists.Count: > 0 };
@@ -35,7 +32,6 @@ internal static class Parser
 
         var (nonExhaustive, flatten, matchResultType) = ParseAttribute(typeSymbol);
         var isVariant = flatten ? IsVariantOfDiscriminatedUnionFlattened(typeSymbol, semanticModel) : IsVariantOfDiscriminatedUnion(typeSymbol, semanticModel);
-        var generateJsonDerivedTypeAttributes = typeSymbol.GetAttributes().Any(IsJsonPolymorphicAttribute);
 
         return new DiscriminatedUnion(
             Type: typeDeclaration,
@@ -44,7 +40,7 @@ internal static class Parser
             MatchResultTypeName: matchResultType ?? "TResult",
             MethodVisibility: nonExhaustive ? "internal" : "public",
             Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
-                .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel, _ => generateJsonDerivedTypeAttributes))
+                .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel, GenerateJsonDerivedTypeAttribute(typeSymbol)))
                 .ToList());
     }
 
@@ -122,9 +118,6 @@ internal static class Parser
         => attribute
             => context.SemanticModel.GetSymbolInfo(attribute, cancellationToken).Symbol is IMethodSymbol attributeSymbol
                 && attributeSymbol.ContainingType.ToDisplayString() == AttributeFullName;
-
-    private static bool IsJsonPolymorphicAttribute(AttributeData attribute)
-        => attribute.AttributeClass?.ToDisplayString() is JsonPolymorphicAttributeName or JsonDerivedTypeAttributeName;
 
     private sealed record DiscriminatedUnionAttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
 
