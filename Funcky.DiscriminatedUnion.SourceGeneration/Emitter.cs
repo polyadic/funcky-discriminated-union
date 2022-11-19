@@ -80,18 +80,18 @@ internal static class Emitter
 
     private static void WriteJsonDerivedTypeAttributes(IndentedTextWriter writer, DiscriminatedUnion discriminatedUnion)
     {
-        if (discriminatedUnion.GenerateJsonDerivedTypeAttributes)
+        foreach (var variant in discriminatedUnion.Variants)
         {
-            foreach (var variant in discriminatedUnion.Variants)
-            {
-                WriteJsonDerivedTypeAttribute(writer, variant);
-            }
+            WriteJsonDerivedTypeAttribute(writer, variant);
         }
     }
 
     private static void WriteJsonDerivedTypeAttribute(IndentedTextWriter writer, DiscriminatedUnionVariant variant)
     {
-        writer.WriteLine($"[global::System.Text.Json.Serialization.JsonDerivedType(typeof({variant.TypeOfTypeName}), {SyntaxFactory.Literal(variant.JsonDerivedTypeDiscriminator)})]");
+        if (variant.GenerateJsonDerivedTypeAttribute)
+        {
+            writer.WriteLine($"[global::System.Text.Json.Serialization.JsonDerivedType(typeof({variant.TypeOfTypeName}), {SyntaxFactory.Literal(variant.JsonDerivedTypeDiscriminator)})]");
+        }
     }
 
     private static string FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)

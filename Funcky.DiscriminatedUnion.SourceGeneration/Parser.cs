@@ -35,6 +35,7 @@ internal static class Parser
 
         var (nonExhaustive, flatten, matchResultType) = ParseAttribute(typeSymbol);
         var isVariant = flatten ? IsVariantOfDiscriminatedUnionFlattened(typeSymbol, semanticModel) : IsVariantOfDiscriminatedUnion(typeSymbol, semanticModel);
+        var generateJsonDerivedTypeAttributes = typeSymbol.GetAttributes().Any(IsJsonPolymorphicAttribute);
 
         return new DiscriminatedUnion(
             Type: typeDeclaration,
@@ -42,9 +43,8 @@ internal static class Parser
             Namespace: FormatNamespace(typeSymbol),
             MatchResultTypeName: matchResultType ?? "TResult",
             MethodVisibility: nonExhaustive ? "internal" : "public",
-            GenerateJsonDerivedTypeAttributes: typeSymbol.GetAttributes().Any(IsJsonPolymorphicAttribute),
             Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
-                .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel))
+                .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel, _ => generateJsonDerivedTypeAttributes))
                 .ToList());
     }
 
@@ -60,7 +60,10 @@ internal static class Parser
     private static string? FormatNamespace(INamedTypeSymbol typeSymbol)
         => typeSymbol.ContainingNamespace?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted));
 
-    private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(TypeDeclarationSyntax discriminatedUnionTypeDeclaration, SemanticModel semanticModel)
+    private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(
+        TypeDeclarationSyntax discriminatedUnionTypeDeclaration,
+        SemanticModel semanticModel,
+        Func<INamedTypeSymbol, bool> generateJsonDerivedTypeAttribute)
         => typeDeclaration =>
         {
             var symbol = semanticModel.GetDeclaredSymbol(typeDeclaration)!;
@@ -70,7 +73,8 @@ internal static class Parser
                 ParameterName: FormatParameterName(symbol),
                 LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discriminatedUnionTypeDeclaration.SpanStart),
                 TypeOfTypeName: ToTypeNameSuitableForTypeOf(symbol),
-                JsonDerivedTypeDiscriminator: symbol.Name);
+                JsonDerivedTypeDiscriminator: symbol.Name,
+                GenerateJsonDerivedTypeAttribute: generateJsonDerivedTypeAttribute(symbol));
         };
 
     private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discriminatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
