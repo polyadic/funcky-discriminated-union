@@ -14,4 +14,7 @@ internal sealed record DiscriminatedUnionVariant(
     TypeDeclarationSyntax Type,
     IReadOnlyList<TypeDeclarationSyntax> ParentTypes,
     string ParameterName,
-    string LocalTypeName);
+    string LocalTypeName,
+    string TypeOfTypeName,
+    string JsonDerivedTypeDiscriminator,
+    bool GenerateJsonDerivedTypeAttribute);

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -5,11 +6,11 @@ using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
 
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
 
-internal static class Parser
+internal static partial class Parser
 {
     public static bool IsSyntaxTargetForGeneration(SyntaxNode node)
-        => node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } }
-                or RecordDeclarationSyntax { AttributeLists: { Count: > 0 } };
+        => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
+                or RecordDeclarationSyntax { AttributeLists.Count: > 0 };
 
     public static TypeDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
@@ -39,37 +40,43 @@ internal static class Parser
             MatchResultTypeName: matchResultType ?? "TResult",
             MethodVisibility: nonExhaustive ? "internal" : "public",
             Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
-                .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel))
+                .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel, GenerateJsonDerivedTypeAttribute(typeSymbol)))
                 .ToList());
     }
 
-    private static AttributeData ParseAttribute(ITypeSymbol type)
+    private static DiscriminatedUnionAttributeData ParseAttribute(ITypeSymbol type)
     {
         var attribute = type.GetAttributes().Single(a => a.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)) == AttributeFullName);
         var nonExhaustive = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.NonExhaustive);
         var flatten = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.Flatten);
         var matchResultType = attribute.GetNamedArgumentOrDefault<string>(AttributeProperties.MatchResultTypeName);
-        return new AttributeData(nonExhaustive, flatten, matchResultType);
+        return new DiscriminatedUnionAttributeData(nonExhaustive, flatten, matchResultType);
     }
 
     private static string? FormatNamespace(INamedTypeSymbol typeSymbol)
         => typeSymbol.ContainingNamespace?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted));
 
-    private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, SemanticModel semanticModel)
+    private static Func<TypeDeclarationSyntax, DiscriminatedUnionVariant> GetDiscriminatedUnionVariant(
+        TypeDeclarationSyntax discriminatedUnionTypeDeclaration,
+        SemanticModel semanticModel,
+        Func<INamedTypeSymbol, bool> generateJsonDerivedTypeAttribute)
         => typeDeclaration =>
         {
             var symbol = semanticModel.GetDeclaredSymbol(typeDeclaration)!;
             return new DiscriminatedUnionVariant(
                 typeDeclaration,
-                ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discrimatedUnionTypeDeclaration).ToList(),
+                ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().TakeWhile(t => t != discriminatedUnionTypeDeclaration).ToList(),
                 ParameterName: FormatParameterName(symbol),
-                LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discrimatedUnionTypeDeclaration.SpanStart));
+                LocalTypeName: symbol.ToMinimalDisplayString(semanticModel, NullableFlowState.NotNull, discriminatedUnionTypeDeclaration.SpanStart),
+                TypeOfTypeName: ToTypeNameSuitableForTypeOf(symbol),
+                JsonDerivedTypeDiscriminator: symbol.Name,
+                GenerateJsonDerivedTypeAttribute: generateJsonDerivedTypeAttribute(symbol));
         };
 
-    private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discrimatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
+    private static IEnumerable<TypeDeclarationSyntax> GetVariantTypeDeclarations(TypeDeclarationSyntax discriminatedUnionTypeDeclaration, Func<TypeDeclarationSyntax, bool> isVariant)
     {
         var visitor = new VariantCollectingVisitor(isVariant);
-        discrimatedUnionTypeDeclaration.Accept(visitor);
+        discriminatedUnionTypeDeclaration.Accept(visitor);
         return visitor.Variants;
     }
 
@@ -78,8 +85,8 @@ internal static class Parser
             && SymbolEqualityComparer.Default.Equals(symbol.BaseType, discriminatedUnionType);
 
     private static Func<TypeDeclarationSyntax, bool> IsVariantOfDiscriminatedUnionFlattened(ITypeSymbol discriminatedUnionType, SemanticModel semanticModel)
-        => node => semanticModel.GetDeclaredSymbol(node) is ITypeSymbol symbol
-                && !symbol.IsAbstract
+        => node
+            => semanticModel.GetDeclaredSymbol(node) is ITypeSymbol { IsAbstract: false } symbol
                 && GetBaseTypes(symbol).Any(t => SymbolEqualityComparer.Default.Equals(t, discriminatedUnionType));
 
     private static IEnumerable<ITypeSymbol> GetBaseTypes(ITypeSymbol symbol)
@@ -97,6 +104,13 @@ internal static class Parser
 
     private static string LowerCaseFirst(string input) => char.ToLowerInvariant(input.First()) + input.Substring(1);
 
+    private static string ToTypeNameSuitableForTypeOf(INamedTypeSymbol type)
+        => type
+            .ToDisplayParts(SymbolDisplayFormat.FullyQualifiedFormat)
+            .Where(part => part.Kind != SymbolDisplayPartKind.TypeParameterName)
+            .ToImmutableArray()
+            .ToDisplayString();
+
     private static Func<AttributeListSyntax, bool> HasDiscriminatedUnionAttribute(GeneratorSyntaxContext context, CancellationToken cancellationToken)
         => attributeList => attributeList.Attributes.Any(IsDiscriminatedUnionAttribute(context, cancellationToken));
 
@@ -105,7 +119,7 @@ internal static class Parser
             => context.SemanticModel.GetSymbolInfo(attribute, cancellationToken).Symbol is IMethodSymbol attributeSymbol
                 && attributeSymbol.ContainingType.ToDisplayString() == AttributeFullName;
 
-    private sealed record AttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
+    private sealed record DiscriminatedUnionAttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
 
     private sealed class VariantCollectingVisitor : CSharpSyntaxWalker
     {
