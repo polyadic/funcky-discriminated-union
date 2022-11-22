@@ -6,18 +6,18 @@ namespace Foo.Bar
 {
     partial record NestedUnion
     {
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
         public abstract TResult Match<TResult>(global::System.Func<Variant, TResult> variant);
         
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
         public abstract void Switch(global::System.Action<Variant> variant);
         
         partial record Variant
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
             public override TResult Match<TResult>(global::System.Func<Variant, TResult> variant) => variant(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
             public override void Switch(global::System.Action<Variant> variant) => variant(this);
         }
     }
