@@ -88,3 +88,46 @@ public abstract partial record SyntaxNode
 }
 ```
 
+### `[JsonPolymorphic]`
+System.Text.Json adds support for [serializing derived classes][json-polymorphism-docs] starting with .NET 7.
+This generator supports this feature by generating the required `[JsonDerivedType]` attributes for you.
+
+All missing `[JsonDerivedType]` attributes are generated if at least one `[JsonDerivedType]` or `[JsonPolymorphic]`
+attribute is specified.
+
+```cs
+using Funcky;
+using System.Text.Serialization;
+
+[DiscriminatedUnion]
+[JsonPolymorphic]
+public abstract partial record Shape
+{
+    public sealed partial record Rectangle(double Width, double Length) : Shape;
+
+    public sealed partial record Circle(double Radius) : Shape;
+
+    public sealed partial record EquilateralTriangle(double SideLength) : Shape;
+}
+```
+
+<details>
+
+<summary>Generated code</summary>
+
+```cs
+using System.Text.Serialization;
+
+[JsonDerivedType(typeof(Rectangle), typeDiscriminator: nameof(Rectangle))]
+[JsonDerivedType(typeof(Circle), typeDiscriminator: nameof(Circle))]
+[JsonDerivedType(typeof(EquilateralTriangle), typeDiscriminator: nameof(EquilateralTriangle))]
+partial record Shape
+{
+    // ...
+}
+```
+
+</details>
+
+
+[json-polymorphism-docs]: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism

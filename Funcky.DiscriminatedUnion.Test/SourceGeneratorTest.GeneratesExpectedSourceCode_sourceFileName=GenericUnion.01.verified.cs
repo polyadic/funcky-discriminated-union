@@ -6,27 +6,27 @@ namespace Funcky.DiscriminatedUnion.Test
 {
     partial record Result<T> where T : notnull
     {
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
         internal abstract TResult Match<TResult>(global::System.Func<Ok, TResult> ok, global::System.Func<Error, TResult> error);
         
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
         internal abstract void Switch(global::System.Action<Ok> ok, global::System.Action<Error> error);
         
         partial record Ok
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
             internal override TResult Match<TResult>(global::System.Func<Ok, TResult> ok, global::System.Func<Error, TResult> error) => ok(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
             internal override void Switch(global::System.Action<Ok> ok, global::System.Action<Error> error) => ok(this);
         }
         
         partial record Error
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
             internal override TResult Match<TResult>(global::System.Func<Ok, TResult> ok, global::System.Func<Error, TResult> error) => error(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.0.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.1.0.0")]
             internal override void Switch(global::System.Action<Ok> ok, global::System.Action<Error> error) => error(this);
         }
     }
