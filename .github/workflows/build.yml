@@ -13,8 +13,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
       name: Install Current .NET SDK
     - name: Restore dependencies
       run: dotnet restore
@@ -26,12 +26,12 @@ jobs:
   nupkg:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
       name: Install Current .NET SDK
     - name: Generate NuGet Packages
       run: dotnet pack --configuration Release --output nupkg
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: success() && github.ref == 'refs/heads/main'
       with:
         name: nupkg
