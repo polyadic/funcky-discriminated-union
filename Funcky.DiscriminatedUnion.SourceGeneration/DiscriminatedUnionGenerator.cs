@@ -29,13 +29,16 @@ public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(code, AddSource);
     }
 
-    [SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1035", Justification = "Disabled for Environment.NewLine for now.")]
     private static void AddSource(SourceProductionContext context, ImmutableArray<string> code)
     {
         if (code.Any())
         {
-            var combinedCode = $"{GeneratedFileHeadersSource}{Environment.NewLine}{Environment.NewLine}" +
-                               $"{string.Join(Environment.NewLine, code)}";
+            const string newline = """
+
+
+                                   """;
+
+            var combinedCode = $"{GeneratedFileHeadersSource}{newline}{newline}{string.Join(newline, code)}";
             context.AddSource("DiscriminatedUnionGenerator.g.cs", combinedCode);
         }
     }
