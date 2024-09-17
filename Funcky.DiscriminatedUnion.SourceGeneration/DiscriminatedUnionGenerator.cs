@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Funcky.DiscriminatedUnion.SourceGeneration.Emitter;
@@ -28,6 +29,7 @@ public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(code, AddSource);
     }
 
+    [SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1035", Justification = "Disabled for Environment.NewLine for now.")]
     private static void AddSource(SourceProductionContext context, ImmutableArray<string> code)
     {
         if (code.Any())

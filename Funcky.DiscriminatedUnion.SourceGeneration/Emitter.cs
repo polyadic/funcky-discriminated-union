@@ -1,4 +1,3 @@
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.CodeDom.Compiler;
@@ -18,23 +17,79 @@ internal static class Emitter
         {
             WriteNamespace(writer, discriminatedUnion);
 
-            WriteParentTypes(writer, discriminatedUnion.ParentTypes);
+            WriteUnionType(discriminatedUnion, writer);
 
-            WriteJsonDerivedTypeAttributes(writer, discriminatedUnion);
-            writer.WriteLine(FormatPartialTypeDeclaration(discriminatedUnion.Type));
-            writer.OpenScope();
-
-            WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)};");
-            writer.WriteLine();
-            WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)};");
-
-            foreach (var variant in discriminatedUnion.Variants)
+            if (discriminatedUnion.GeneratePartitionExtension)
             {
-                WriteVariant(writer, discriminatedUnion, variant);
+                writer.WriteLine();
+                WritePartitionExtension(discriminatedUnion, writer);
             }
         }
 
         return stringBuilder.ToString();
+    }
+
+    private static void WriteUnionType(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
+    {
+        using var scope = writer.AutoCloseScopes();
+
+        WriteParentTypes(writer, discriminatedUnion.ParentTypes);
+
+        WriteJsonDerivedTypeAttributes(writer, discriminatedUnion);
+        writer.WriteLine(FormatPartialTypeDeclaration(discriminatedUnion.Type));
+        writer.OpenScope();
+
+        WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)};");
+        writer.WriteLine();
+        WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)};");
+
+        foreach (var variant in discriminatedUnion.Variants)
+        {
+            WriteVariant(writer, discriminatedUnion, variant);
+        }
+    }
+
+    private static void WritePartitionExtension(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
+    {
+        using var scope = writer.AutoCloseScopes();
+
+        writer.WriteLine($"{discriminatedUnion.MethodVisibility} static class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
+        writer.OpenScope();
+
+        writer.Write("public record struct Partitions(");
+        var partitionVariants = discriminatedUnion
+            .Variants
+            .Select(v => $"System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName}");
+        writer.Write(string.Join(", ", partitionVariants));
+        writer.WriteLine(");");
+
+        writer.WriteLine();
+
+        writer.WriteLine($"public static Partitions Partition(this System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");
+        writer.OpenScope();
+
+        foreach (var variant in discriminatedUnion.Variants)
+        {
+            writer.WriteLine($"var {variant.ParameterName}Items = System.Collections.Immutable.ImmutableList.CreateBuilder<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>();");
+        }
+
+        using (writer.AutoCloseScopes())
+        {
+            writer.WriteLine("foreach (var item in source)");
+            writer.OpenScope();
+            writer.Write("item.Switch(");
+
+            var assignmentVariants = discriminatedUnion
+                .Variants
+                .Select(v => $"{v.ParameterName}: {v.ParameterName}Items.Add");
+
+            writer.Write(string.Join(", ", assignmentVariants));
+
+            writer.WriteLine(");");
+        }
+
+        var items = discriminatedUnion.Variants.Select(v => $"{v.ParameterName}Items.ToImmutable()");
+        writer.WriteLine($"return new({string.Join(", ", items)});");
     }
 
     private static void WriteNamespace(IndentedTextWriter writer, DiscriminatedUnion discriminatedUnion)

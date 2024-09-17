@@ -7,6 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Funcky.DiscriminatedUnion.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Funcky.DiscriminatedUnion.Test", "Funcky.DiscriminatedUnion.Test\Funcky.DiscriminatedUnion.Test.csproj", "{B4C3E53F-75BB-4FD4-AF8B-9F715C423766}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{53A014A1-CA3C-476A-ACC5-83CDF144C7AE}"
+	ProjectSection(SolutionItems) = preProject
+		changelog.md = changelog.md
+		global.json = global.json
+		readme.md = readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

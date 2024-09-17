@@ -29,6 +29,9 @@ internal static class SourceCodeSnippets
                 /// <summary>Generates exhaustive <c>Match</c> and <c>Switch</c> methods for the entire type hierarchy.</summary>
                 public bool {{AttributeProperties.Flatten}} { get; set; }
 
+                /// <summary>If a specialized partition extension method for <c>IEnumerable<YourType></c> should be generated. Defaults to false.</summary>
+                public bool {{AttributeProperties.GeneratePartitionExtension}} { get; set; }
+
                 /// <summary>Customized the generic type name used for the result in the generated <c>Match</c> methods. Defaults to <c>TResult</c>.</summary>
                 public string? {{AttributeProperties.MatchResultTypeName}} { get; set; }
             }
@@ -46,6 +49,7 @@ internal static class SourceCodeSnippets
     {
         public const string NonExhaustive = "NonExhaustive";
         public const string Flatten = "Flatten";
+        public const string GeneratePartitionExtension = "GeneratePartitionExtension";
         public const string MatchResultTypeName = "MatchResultTypeName";
     }
 }

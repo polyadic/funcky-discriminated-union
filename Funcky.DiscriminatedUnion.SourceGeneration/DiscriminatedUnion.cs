@@ -8,7 +8,8 @@ internal sealed record DiscriminatedUnion(
     string? Namespace,
     string MethodVisibility,
     string MatchResultTypeName,
-    IReadOnlyList<DiscriminatedUnionVariant> Variants);
+    IReadOnlyList<DiscriminatedUnionVariant> Variants,
+    bool GeneratePartitionExtension);
 
 internal sealed record DiscriminatedUnionVariant(
     TypeDeclarationSyntax Type,

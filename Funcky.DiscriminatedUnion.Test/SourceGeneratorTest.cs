@@ -20,6 +20,7 @@ public sealed class SourceGeneratorTest
     [InlineData("DeeplyNestedUnion")]
     [InlineData("NonExhaustive")]
     [InlineData("JsonPolymorphic")]
+    [InlineData("UnionWithPartitionUsage")]
     public async Task GeneratesExpectedSourceCode(string sourceFileName) => await Verify(sourceFileName);
 
     [Fact]
@@ -53,6 +54,7 @@ public sealed class SourceGeneratorTest
                 MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Collections.Immutable.ImmutableList).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location),
             },
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

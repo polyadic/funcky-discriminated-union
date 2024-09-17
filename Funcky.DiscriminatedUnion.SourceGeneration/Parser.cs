@@ -30,7 +30,7 @@ internal static partial class Parser
             return null;
         }
 
-        var (nonExhaustive, flatten, matchResultType) = ParseAttribute(typeSymbol);
+        var (nonExhaustive, flatten, matchResultType, generatePartitionExtension) = ParseAttribute(typeSymbol);
         var isVariant = flatten ? IsVariantOfDiscriminatedUnionFlattened(typeSymbol, semanticModel) : IsVariantOfDiscriminatedUnion(typeSymbol, semanticModel);
 
         return new DiscriminatedUnion(
@@ -39,6 +39,7 @@ internal static partial class Parser
             Namespace: FormatNamespace(typeSymbol),
             MatchResultTypeName: matchResultType ?? "TResult",
             MethodVisibility: nonExhaustive ? "internal" : "public",
+            GeneratePartitionExtension: generatePartitionExtension,
             Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
                 .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel, GenerateJsonDerivedTypeAttribute(typeSymbol)))
                 .ToList());
@@ -50,7 +51,8 @@ internal static partial class Parser
         var nonExhaustive = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.NonExhaustive);
         var flatten = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.Flatten);
         var matchResultType = attribute.GetNamedArgumentOrDefault<string>(AttributeProperties.MatchResultTypeName);
-        return new DiscriminatedUnionAttributeData(nonExhaustive, flatten, matchResultType);
+        var generatePartitionExtension = attribute.GetNamedArgumentOrDefault<bool>(AttributeProperties.GeneratePartitionExtension);
+        return new DiscriminatedUnionAttributeData(nonExhaustive, flatten, matchResultType, generatePartitionExtension);
     }
 
     private static string? FormatNamespace(INamedTypeSymbol typeSymbol)
@@ -119,7 +121,11 @@ internal static partial class Parser
             => context.SemanticModel.GetSymbolInfo(attribute, cancellationToken).Symbol is IMethodSymbol attributeSymbol
                 && attributeSymbol.ContainingType.ToDisplayString() == AttributeFullName;
 
-    private sealed record DiscriminatedUnionAttributeData(bool NonExhaustive, bool Flatten, string? MatchResultType);
+    private sealed record DiscriminatedUnionAttributeData(
+        bool NonExhaustive,
+        bool Flatten,
+        string? MatchResultType,
+        bool GeneratePartitionExtension);
 
     private sealed class VariantCollectingVisitor : CSharpSyntaxWalker
     {
