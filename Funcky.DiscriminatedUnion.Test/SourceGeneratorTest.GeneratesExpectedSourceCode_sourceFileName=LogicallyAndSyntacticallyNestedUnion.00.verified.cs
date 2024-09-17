@@ -14,6 +14,9 @@ namespace Funcky
         /// <summary>Generates exhaustive <c>Match</c> and <c>Switch</c> methods for the entire type hierarchy.</summary>
         public bool Flatten { get; set; }
 
+        /// <summary>If a specialized partition extension method for <c>IEnumerable<YourType></c> should be generated. Defaults to false.</summary>
+        public bool GeneratePartitionExtension { get; set; }
+
         /// <summary>Customized the generic type name used for the result in the generated <c>Match</c> methods. Defaults to <c>TResult</c>.</summary>
         public string? MatchResultTypeName { get; set; }
     }
