@@ -40,20 +40,20 @@ namespace Funcky.DiscriminatedUnion.Test.Sources
         }
     }
     
-    public static class UnionWithPartitionUsageEnumerableExtensions
+    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+    public static partial class UnionWithPartitionUsageEnumerableExtensions
     {
-        public record struct Partitions(System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> success, System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> warning, System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> error);
-        
-        public static Partitions Partition(this System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
+        public static (global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> success, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> warning, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> error)
+         Partition(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
         {
-            var successItems = System.Collections.Immutable.ImmutableList.CreateBuilder<UnionWithPartitionUsage.Success>();
-            var warningItems = System.Collections.Immutable.ImmutableList.CreateBuilder<UnionWithPartitionUsage.Warning>();
-            var errorItems = System.Collections.Immutable.ImmutableList.CreateBuilder<UnionWithPartitionUsage.Error>();
+            var successItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Success>();
+            var warningItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Warning>();
+            var errorItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Error>();
             foreach (var item in source)
             {
                 item.Switch(success: successItems.Add, warning: warningItems.Add, error: errorItems.Add);
             }
-            return new(successItems.ToImmutable(), warningItems.ToImmutable(), errorItems.ToImmutable());
+            return new(successItems.AsReadOnly(), warningItems.AsReadOnly(), errorItems.AsReadOnly());
         }
     }
 }
