@@ -53,24 +53,23 @@ internal static class Emitter
     {
         using var scope = writer.AutoCloseScopes();
 
-        writer.WriteLine($"{discriminatedUnion.MethodVisibility} static class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
+        writer.WriteLine(GeneratedCodeAttributeSource);
+        writer.WriteLine($"{discriminatedUnion.MethodVisibility} static partial class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
         writer.OpenScope();
 
-        writer.Write("public record struct Partitions(");
+        writer.Write($"public static ");
+        writer.Write("(");
         var partitionVariants = discriminatedUnion
             .Variants
-            .Select(v => $"System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName}");
+            .Select(v => $"global::System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName}");
         writer.Write(string.Join(", ", partitionVariants));
-        writer.WriteLine(");");
-
-        writer.WriteLine();
-
-        writer.WriteLine($"public static Partitions Partition(this System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");
+        writer.WriteLine(")");
+        writer.WriteLine($" Partition(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");
         writer.OpenScope();
 
         foreach (var variant in discriminatedUnion.Variants)
         {
-            writer.WriteLine($"var {variant.ParameterName}Items = System.Collections.Immutable.ImmutableList.CreateBuilder<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>();");
+            writer.WriteLine($"var {variant.ParameterName}Items = new global::System.Collections.Generic.List<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>();");
         }
 
         using (writer.AutoCloseScopes())
@@ -88,7 +87,7 @@ internal static class Emitter
             writer.WriteLine(");");
         }
 
-        var items = discriminatedUnion.Variants.Select(v => $"{v.ParameterName}Items.ToImmutable()");
+        var items = discriminatedUnion.Variants.Select(v => $"{v.ParameterName}Items.AsReadOnly()");
         writer.WriteLine($"return new({string.Join(", ", items)});");
     }
 

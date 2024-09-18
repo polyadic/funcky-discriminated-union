@@ -33,12 +33,7 @@ public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
     {
         if (code.Any())
         {
-            const string newline = """
-
-
-                                   """;
-
-            var combinedCode = $"{GeneratedFileHeadersSource}{newline}{newline}{string.Join(newline, code)}";
+            var combinedCode = $"{GeneratedFileHeadersSource}\n{string.Join("\n", code)}";
             context.AddSource("DiscriminatedUnionGenerator.g.cs", combinedCode);
         }
     }

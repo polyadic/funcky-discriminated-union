@@ -14,15 +14,15 @@ public static class UnionWithPartitionUsageTest
 {
     public static void Test()
     {
-        UnionWithPartitionUsage[] instances =
-        [
+        var instances = new UnionWithPartitionUsage[]
+        {
             new UnionWithPartitionUsage.Success(),
             new UnionWithPartitionUsage.Warning(),
             new UnionWithPartitionUsage.Error(),
             new UnionWithPartitionUsage.Success(),
             new UnionWithPartitionUsage.Warning(),
             new UnionWithPartitionUsage.Warning(),
-        ];
+        };
 
         var (successes, warnings, errors) = instances.Partition();
     }
