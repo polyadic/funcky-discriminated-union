@@ -43,8 +43,7 @@ namespace Funcky.DiscriminatedUnion.Test.Sources
     [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
     public static partial class UnionWithPartitionUsageEnumerableExtensions
     {
-        public static (global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> success, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> warning, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> error)
-         Partition(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
+        public static (global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> success, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> warning, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> error) Partition(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
         {
             var successItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Success>();
             var warningItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Warning>();
@@ -53,13 +52,10 @@ namespace Funcky.DiscriminatedUnion.Test.Sources
             {
                 item.Switch(success: successItems.Add, warning: warningItems.Add, error: errorItems.Add);
             }
-            return new(successItems.AsReadOnly(), warningItems.AsReadOnly(), errorItems.AsReadOnly());
+            return (successItems.AsReadOnly(), warningItems.AsReadOnly(), errorItems.AsReadOnly());
         }
         
-        public static TResult Partition<TResult>(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source, global::System.Func<global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success>, 
-        global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning>, 
-        global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error>, 
-        TResult> resultSelector)
+        public static TResult Partition<TResult>(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source, global::System.Func<global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success>, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning>, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error>, TResult> resultSelector)
         {
             var successItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Success>();
             var warningItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Warning>();

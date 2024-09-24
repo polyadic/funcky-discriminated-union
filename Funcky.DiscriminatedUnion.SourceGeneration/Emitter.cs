@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.CodeDom.Compiler;
+using System.Runtime.CompilerServices;
 using System.Text;
 using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
 
@@ -36,7 +37,7 @@ internal static class Emitter
         WriteParentTypes(writer, discriminatedUnion.ParentTypes);
 
         WriteJsonDerivedTypeAttributes(writer, discriminatedUnion);
-        writer.WriteLine(FormatPartialTypeDeclaration(discriminatedUnion.Type));
+        writer.WriteLineInterpolated(FormatPartialTypeDeclaration(discriminatedUnion.Type));
         writer.OpenScope();
 
         WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)};");
@@ -54,7 +55,7 @@ internal static class Emitter
         using var scope = writer.AutoCloseScopes();
 
         writer.WriteLine(GeneratedCodeAttributeSource);
-        writer.WriteLine($"{discriminatedUnion.MethodVisibility} static partial class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
+        writer.WriteLineInterpolated($"{discriminatedUnion.MethodVisibility} static partial class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
         writer.OpenScope();
 
         WriteTupleReturningPartitionExtension(discriminatedUnion, writer);
@@ -66,77 +67,51 @@ internal static class Emitter
     {
         using var methodScope = writer.AutoCloseScopes();
 
-        writer.Write($"public static ");
-        writer.Write("(");
-        var partitionVariants = discriminatedUnion
+        var namedResultPartitions = discriminatedUnion
             .Variants
-            .Select(v => $"global::System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName}");
-        writer.Write(string.Join(", ", partitionVariants));
-        writer.WriteLine(")");
-        writer.WriteLine($" Partition(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");
+            .JoinToInterpolation(
+                v => $"global::System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName}",
+                ", ");
+
+        writer.WriteLineInterpolated($"public static ({namedResultPartitions}) Partition(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");
         writer.OpenScope();
 
         WritePartitioningIntoLists(discriminatedUnion, writer);
 
-        var items = discriminatedUnion.Variants.Select(v => $"{v.ParameterName}Items.AsReadOnly()");
-        writer.WriteLine($"return new({string.Join(", ", items)});");
+        writer.WriteLineInterpolated($"return ({discriminatedUnion.Variants.JoinToInterpolation(v => $"{v.ParameterName}Items.AsReadOnly()", ", ")});");
     }
 
     private static void WritePartitionWithResultSelector(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
     {
         using var methodScope = writer.AutoCloseScopes();
 
-        writer.Write($"public static TResult Partition<{discriminatedUnion.MatchResultTypeName}>(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source, global::System.Func<");
+        writer.WriteInterpolated($"public static TResult Partition<{discriminatedUnion.MatchResultTypeName}>(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source, global::System.Func<");
 
         foreach (var variant in discriminatedUnion.Variants)
         {
-            writer.Write("global::System.Collections.Generic.IReadOnlyList<");
-            writer.Write(discriminatedUnion.Type.Identifier);
-            writer.Write(".");
-            writer.Write(variant.LocalTypeName);
-            writer.WriteLine(">, ");
+            writer.WriteInterpolated($"global::System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>, ");
         }
 
-        writer.WriteLine($"{discriminatedUnion.MatchResultTypeName}> resultSelector)");
+        writer.WriteLineInterpolated($"{discriminatedUnion.MatchResultTypeName}> resultSelector)");
         writer.OpenScope();
 
         WritePartitioningIntoLists(discriminatedUnion, writer);
 
-        writer.Write("return resultSelector(");
-        WriteCommaSeparated(
-            discriminatedUnion.Variants,
-            (v, w) =>
-            {
-                w.Write(v.ParameterName);
-                w.Write("Items.AsReadOnly()");
-            },
-            writer);
-        writer.WriteLine(");");
+        writer.WriteLineInterpolated($"return resultSelector({discriminatedUnion.Variants.JoinToInterpolation(v => $"{v.ParameterName}Items.AsReadOnly()", ", ")});");
     }
 
     private static void WritePartitioningIntoLists(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
     {
         foreach (var variant in discriminatedUnion.Variants)
         {
-            writer.WriteLine($"var {variant.ParameterName}Items = new global::System.Collections.Generic.List<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>();");
+            writer.WriteLineInterpolated($"var {variant.ParameterName}Items = new global::System.Collections.Generic.List<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>();");
         }
 
         using (writer.AutoCloseScopes())
         {
             writer.WriteLine("foreach (var item in source)");
             writer.OpenScope();
-            writer.Write("item.Switch(");
-            WriteCommaSeparated(
-                discriminatedUnion.Variants,
-                (v, w) =>
-                {
-                    w.Write(v.ParameterName);
-                    w.Write(": ");
-                    w.Write(v.ParameterName);
-                    w.Write("Items.Add");
-                },
-                writer);
-            writer.WriteLine(");");
+            writer.WriteLineInterpolated($"item.Switch({discriminatedUnion.Variants.JoinToInterpolation(v => $"{v.ParameterName}: {v.ParameterName}Items.Add", ", ")});");
         }
     }
 
@@ -144,7 +119,7 @@ internal static class Emitter
     {
         if (!string.IsNullOrEmpty(discriminatedUnion.Namespace))
         {
-            writer.WriteLine($"namespace {discriminatedUnion.Namespace}");
+            writer.WriteLineInterpolated($"namespace {discriminatedUnion.Namespace}");
             writer.OpenScope();
         }
     }
@@ -153,7 +128,7 @@ internal static class Emitter
     {
         foreach (var parent in parents.Reverse())
         {
-            writer.WriteLine(FormatPartialTypeDeclaration(parent));
+            writer.WriteLineInterpolated(FormatPartialTypeDeclaration(parent));
             writer.OpenScope();
         }
     }
@@ -166,7 +141,7 @@ internal static class Emitter
 
             WriteParentTypes(writer, variant.ParentTypes);
 
-            writer.WriteLine(FormatPartialTypeDeclaration(variant.Type));
+            writer.WriteLineInterpolated(FormatPartialTypeDeclaration(variant.Type));
             writer.OpenScope();
 
             WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
@@ -175,10 +150,10 @@ internal static class Emitter
         }
     }
 
-    private static void WriteGeneratedMethod(IndentedTextWriter writer, string method)
+    private static void WriteGeneratedMethod(IndentedTextWriter writer, CollectingInterpolatedStringHandler method)
     {
         writer.WriteLine(GeneratedCodeAttributeSource);
-        writer.WriteLine(method);
+        writer.WriteLineInterpolated(method);
     }
 
     private static void WriteJsonDerivedTypeAttributes(IndentedTextWriter writer, DiscriminatedUnion discriminatedUnion)
@@ -193,44 +168,27 @@ internal static class Emitter
     {
         if (variant.GenerateJsonDerivedTypeAttribute)
         {
-            writer.WriteLine($"[global::System.Text.Json.Serialization.JsonDerivedType(typeof({variant.TypeOfTypeName}), {SyntaxFactory.Literal(variant.JsonDerivedTypeDiscriminator)})]");
+            writer.WriteLineInterpolated($"[global::System.Text.Json.Serialization.JsonDerivedType(typeof({variant.TypeOfTypeName}), {SyntaxFactory.Literal(variant.JsonDerivedTypeDiscriminator)})]");
         }
     }
 
-    private static string FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)
+    private static CollectingInterpolatedStringHandler FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)
         => $"{genericTypeName} Match<{genericTypeName}>({string.Join(", ", variants.Select(variant => $"global::System.Func<{variant.LocalTypeName}, {genericTypeName}> {FormatIdentifier(variant.ParameterName)}"))})";
 
     private static string FormatSwitchMethodDeclaration(IEnumerable<DiscriminatedUnionVariant> variants)
         => $"void Switch({string.Join(", ", variants.Select(variant => $"global::System.Action<{variant.LocalTypeName}> {FormatIdentifier(variant.ParameterName)}"))})";
 
-    private static string FormatPartialTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
+    private static CollectingInterpolatedStringHandler FormatPartialTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
         => typeDeclaration is RecordDeclarationSyntax recordDeclaration
             ? CombineTokens("partial", typeDeclaration.Keyword, recordDeclaration.ClassOrStructKeyword, typeDeclaration.Identifier.ToString() + typeDeclaration.TypeParameterList, typeDeclaration.ConstraintClauses)
             : CombineTokens("partial", typeDeclaration.Keyword, typeDeclaration.Identifier.ToString() + typeDeclaration.TypeParameterList, typeDeclaration.ConstraintClauses);
 
-    private static string CombineTokens(params object[] tokens)
-        => string.Join(" ", tokens.Select(t => t.ToString()).Where(t => !string.IsNullOrEmpty(t)));
+    private static CollectingInterpolatedStringHandler CombineTokens(params object[] tokens)
+        => tokens.Select(t => t.ToString()).Where(t => !string.IsNullOrEmpty(t)).JoinToInterpolation(" ");
 
     private static string FormatIdentifier(string identifier)
         => IsIdentifier(identifier) ? '@' + identifier : identifier;
 
     private static bool IsIdentifier(string identifier)
         => SyntaxFacts.GetKeywordKind(identifier) != SyntaxKind.None;
-
-    // Prevents extra string allocations compared to usages of string.Join before calling the writer.
-    private static void WriteCommaSeparated<T>(IEnumerable<T> items, Action<T, IndentedTextWriter> action, IndentedTextWriter writer)
-    {
-        using var enumerator = items.GetEnumerator();
-
-        if (enumerator.MoveNext())
-        {
-            action(enumerator.Current, writer);
-
-            while (enumerator.MoveNext())
-            {
-                writer.Write(", ");
-                action(enumerator.Current, writer);
-            }
-        }
-    }
 }
