@@ -25,5 +25,7 @@ public static class UnionWithPartitionUsageTest
         };
 
         var (successes, warnings, errors) = instances.Partition();
+
+        var warningsAndErrorsCount = instances.Partition(resultSelector: (_, w, e) => w.Count + e.Count);
     }
 }

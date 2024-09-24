@@ -55,5 +55,20 @@ namespace Funcky.DiscriminatedUnion.Test.Sources
             }
             return new(successItems.AsReadOnly(), warningItems.AsReadOnly(), errorItems.AsReadOnly());
         }
+        
+        public static TResult Partition<TResult>(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source, global::System.Func<global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success>, 
+        global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning>, 
+        global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error>, 
+        TResult> resultSelector)
+        {
+            var successItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Success>();
+            var warningItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Warning>();
+            var errorItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Error>();
+            foreach (var item in source)
+            {
+                item.Switch(success: successItems.Add, warning: warningItems.Add, error: errorItems.Add);
+            }
+            return resultSelector(successItems.AsReadOnly(), warningItems.AsReadOnly(), errorItems.AsReadOnly());
+        }
     }
 }

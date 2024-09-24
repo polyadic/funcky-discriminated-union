@@ -22,7 +22,7 @@ internal static class Emitter
             if (discriminatedUnion.GeneratePartitionExtension)
             {
                 writer.WriteLine();
-                WritePartitionExtension(discriminatedUnion, writer);
+                WritePartitionExtensions(discriminatedUnion, writer);
             }
         }
 
@@ -49,13 +49,22 @@ internal static class Emitter
         }
     }
 
-    private static void WritePartitionExtension(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
+    private static void WritePartitionExtensions(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
     {
         using var scope = writer.AutoCloseScopes();
 
         writer.WriteLine(GeneratedCodeAttributeSource);
         writer.WriteLine($"{discriminatedUnion.MethodVisibility} static partial class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
         writer.OpenScope();
+
+        WriteTupleReturningPartitionExtension(discriminatedUnion, writer);
+        writer.WriteLine();
+        WritePartitionWithResultSelector(discriminatedUnion, writer);
+    }
+
+    private static void WriteTupleReturningPartitionExtension(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
+    {
+        using var methodScope = writer.AutoCloseScopes();
 
         writer.Write($"public static ");
         writer.Write("(");
@@ -67,6 +76,46 @@ internal static class Emitter
         writer.WriteLine($" Partition(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");
         writer.OpenScope();
 
+        WritePartitioningIntoLists(discriminatedUnion, writer);
+
+        var items = discriminatedUnion.Variants.Select(v => $"{v.ParameterName}Items.AsReadOnly()");
+        writer.WriteLine($"return new({string.Join(", ", items)});");
+    }
+
+    private static void WritePartitionWithResultSelector(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
+    {
+        using var methodScope = writer.AutoCloseScopes();
+
+        writer.Write($"public static TResult Partition<{discriminatedUnion.MatchResultTypeName}>(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source, global::System.Func<");
+
+        foreach (var variant in discriminatedUnion.Variants)
+        {
+            writer.Write("global::System.Collections.Generic.IReadOnlyList<");
+            writer.Write(discriminatedUnion.Type.Identifier);
+            writer.Write(".");
+            writer.Write(variant.LocalTypeName);
+            writer.WriteLine(">, ");
+        }
+
+        writer.WriteLine($"{discriminatedUnion.MatchResultTypeName}> resultSelector)");
+        writer.OpenScope();
+
+        WritePartitioningIntoLists(discriminatedUnion, writer);
+
+        writer.Write("return resultSelector(");
+        WriteCommaSeparated(
+            discriminatedUnion.Variants,
+            (v, w) =>
+            {
+                w.Write(v.ParameterName);
+                w.Write("Items.AsReadOnly()");
+            },
+            writer);
+        writer.WriteLine(");");
+    }
+
+    private static void WritePartitioningIntoLists(DiscriminatedUnion discriminatedUnion, IndentedTextWriter writer)
+    {
         foreach (var variant in discriminatedUnion.Variants)
         {
             writer.WriteLine($"var {variant.ParameterName}Items = new global::System.Collections.Generic.List<{discriminatedUnion.Type.Identifier}.{variant.LocalTypeName}>();");
@@ -77,18 +126,18 @@ internal static class Emitter
             writer.WriteLine("foreach (var item in source)");
             writer.OpenScope();
             writer.Write("item.Switch(");
-
-            var assignmentVariants = discriminatedUnion
-                .Variants
-                .Select(v => $"{v.ParameterName}: {v.ParameterName}Items.Add");
-
-            writer.Write(string.Join(", ", assignmentVariants));
-
+            WriteCommaSeparated(
+                discriminatedUnion.Variants,
+                (v, w) =>
+                {
+                    w.Write(v.ParameterName);
+                    w.Write(": ");
+                    w.Write(v.ParameterName);
+                    w.Write("Items.Add");
+                },
+                writer);
             writer.WriteLine(");");
         }
-
-        var items = discriminatedUnion.Variants.Select(v => $"{v.ParameterName}Items.AsReadOnly()");
-        writer.WriteLine($"return new({string.Join(", ", items)});");
     }
 
     private static void WriteNamespace(IndentedTextWriter writer, DiscriminatedUnion discriminatedUnion)
@@ -167,4 +216,21 @@ internal static class Emitter
 
     private static bool IsIdentifier(string identifier)
         => SyntaxFacts.GetKeywordKind(identifier) != SyntaxKind.None;
+
+    // Prevents extra string allocations compared to usages of string.Join before calling the writer.
+    private static void WriteCommaSeparated<T>(IEnumerable<T> items, Action<T, IndentedTextWriter> action, IndentedTextWriter writer)
+    {
+        using var enumerator = items.GetEnumerator();
+
+        if (enumerator.MoveNext())
+        {
+            action(enumerator.Current, writer);
+
+            while (enumerator.MoveNext())
+            {
+                writer.Write(", ");
+                action(enumerator.Current, writer);
+            }
+        }
+    }
 }
