@@ -12,20 +12,10 @@ public abstract partial record UnionWithPartitionUsage
 
 public static class UnionWithPartitionUsageTest
 {
-    public static void Test()
+    public static void Test(UnionWithPartitionUsage[] items)
     {
-        var instances = new UnionWithPartitionUsage[]
-        {
-            new UnionWithPartitionUsage.Success(),
-            new UnionWithPartitionUsage.Warning(),
-            new UnionWithPartitionUsage.Error(),
-            new UnionWithPartitionUsage.Success(),
-            new UnionWithPartitionUsage.Warning(),
-            new UnionWithPartitionUsage.Warning(),
-        };
+        var (successes, warnings, errors) = items.Partition();
 
-        var (successes, warnings, errors) = instances.Partition();
-
-        var warningsAndErrorsCount = instances.Partition(resultSelector: (_, w, e) => w.Count + e.Count);
+        int _ = items.Partition(resultSelector: (_, w, e) => w.Count + e.Count);
     }
 }

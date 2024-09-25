@@ -21,6 +21,7 @@ public sealed class SourceGeneratorTest
     [InlineData("NonExhaustive")]
     [InlineData("JsonPolymorphic")]
     [InlineData("UnionWithPartitionUsage")]
+    [InlineData("FlattenedUnionWithPartition")]
     public async Task GeneratesExpectedSourceCode(string sourceFileName) => await Verify(sourceFileName);
 
     [Fact]

@@ -10,11 +10,6 @@ public readonly struct CollectingInterpolatedStringHandler
         _items = new List<object?>(formattedCount * 2);
     }
 
-    public CollectingInterpolatedStringHandler(List<object?> items)
-    {
-        _items = items;
-    }
-
     public CollectingInterpolatedStringHandler()
     {
         _items = new List<object?>();

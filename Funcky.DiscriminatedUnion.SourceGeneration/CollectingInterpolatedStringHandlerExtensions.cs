@@ -10,7 +10,7 @@ public static class CollectingInterpolatedStringHandlerExtensions
 
         if (!enumerator.MoveNext())
         {
-            return default;
+            return new CollectingInterpolatedStringHandler();
         }
 
         var result = new CollectingInterpolatedStringHandler();
@@ -35,7 +35,7 @@ public static class CollectingInterpolatedStringHandlerExtensions
 
         if (!enumerator.MoveNext())
         {
-            return default;
+            return new CollectingInterpolatedStringHandler();
         }
 
         var result = new CollectingInterpolatedStringHandler();
