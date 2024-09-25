@@ -1,7 +1,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.CodeDom.Compiler;
-using System.Runtime.CompilerServices;
 using System.Text;
 using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
 
@@ -173,10 +172,10 @@ internal static class Emitter
     }
 
     private static CollectingInterpolatedStringHandler FormatMatchMethodDeclaration(string genericTypeName, IEnumerable<DiscriminatedUnionVariant> variants)
-        => $"{genericTypeName} Match<{genericTypeName}>({string.Join(", ", variants.Select(variant => $"global::System.Func<{variant.LocalTypeName}, {genericTypeName}> {FormatIdentifier(variant.ParameterName)}"))})";
+        => $"{genericTypeName} Match<{genericTypeName}>({variants.JoinToInterpolation(v => $"global::System.Func<{v.LocalTypeName}, {genericTypeName}> {FormatIdentifier(v.ParameterName)}", ", ")})";
 
-    private static string FormatSwitchMethodDeclaration(IEnumerable<DiscriminatedUnionVariant> variants)
-        => $"void Switch({string.Join(", ", variants.Select(variant => $"global::System.Action<{variant.LocalTypeName}> {FormatIdentifier(variant.ParameterName)}"))})";
+    private static CollectingInterpolatedStringHandler FormatSwitchMethodDeclaration(IEnumerable<DiscriminatedUnionVariant> variants)
+        => $"void Switch({variants.JoinToInterpolation(v => $"global::System.Action<{v.LocalTypeName}> {FormatIdentifier(v.ParameterName)}", ", ")})";
 
     private static CollectingInterpolatedStringHandler FormatPartialTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
         => typeDeclaration is RecordDeclarationSyntax recordDeclaration
@@ -186,8 +185,8 @@ internal static class Emitter
     private static CollectingInterpolatedStringHandler CombineTokens(params object[] tokens)
         => tokens.Select(t => t.ToString()).Where(t => !string.IsNullOrEmpty(t)).JoinToInterpolation(" ");
 
-    private static string FormatIdentifier(string identifier)
-        => IsIdentifier(identifier) ? '@' + identifier : identifier;
+    private static CollectingInterpolatedStringHandler FormatIdentifier(string identifier)
+        => $"{(IsIdentifier(identifier) ? "@" : string.Empty)}{identifier}";
 
     private static bool IsIdentifier(string identifier)
         => SyntaxFacts.GetKeywordKind(identifier) != SyntaxKind.None;
