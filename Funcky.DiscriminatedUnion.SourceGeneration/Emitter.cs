@@ -69,7 +69,7 @@ internal static class Emitter
         var namedResultPartitions = discriminatedUnion
             .Variants
             .JoinToInterpolation(
-                v => $"global::System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName}",
+                v => $"global::System.Collections.Generic.IReadOnlyList<{discriminatedUnion.Type.Identifier}.{v.LocalTypeName}> {v.ParameterName[..1].ToUpper()}{v.ParameterName[1..]}",
                 ", ");
 
         writer.WriteLineInterpolated($"public static ({namedResultPartitions}) Partition(this global::System.Collections.Generic.IEnumerable<{discriminatedUnion.Type.Identifier}> source)");

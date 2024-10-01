@@ -34,7 +34,7 @@ namespace Funcky.DiscriminatedUnion.Test
     [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
     public static partial class FlattenedUnionWithPartitionEnumerableExtensions
     {
-        public static (global::System.Collections.Generic.IReadOnlyList<FlattenedUnionWithPartition.Keyword> keyword, global::System.Collections.Generic.IReadOnlyList<FlattenedUnionWithPartition.Integer> integer) Partition(this global::System.Collections.Generic.IEnumerable<FlattenedUnionWithPartition> source)
+        public static (global::System.Collections.Generic.IReadOnlyList<FlattenedUnionWithPartition.Keyword> Keyword, global::System.Collections.Generic.IReadOnlyList<FlattenedUnionWithPartition.Integer> Integer) Partition(this global::System.Collections.Generic.IEnumerable<FlattenedUnionWithPartition> source)
         {
             var keywordItems = new global::System.Collections.Generic.List<FlattenedUnionWithPartition.Keyword>();
             var integerItems = new global::System.Collections.Generic.List<FlattenedUnionWithPartition.Integer>();

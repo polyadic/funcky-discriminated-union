@@ -43,7 +43,7 @@ namespace Funcky.DiscriminatedUnion.Test.Sources
     [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
     public static partial class UnionWithPartitionUsageEnumerableExtensions
     {
-        public static (global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> success, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> warning, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> error) Partition(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
+        public static (global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> Success, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> Warning, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> Error) Partition(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
         {
             var successItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Success>();
             var warningItems = new global::System.Collections.Generic.List<UnionWithPartitionUsage.Warning>();
