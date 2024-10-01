@@ -130,4 +130,38 @@ partial record Shape
 </details>
 
 
+### `GeneratePartitionExtension`
+Set `GeneratePartitionExtension` to true to auto-generate partition methods for `IEnumerable<T>` of your type.
+
+```cs
+using Funcky;
+using System.Text.Serialization;
+
+[DiscriminatedUnion(GeneratePartitionExtension = true)]
+public abstract partial record Result
+{
+    public sealed partial record Ok() : Result;
+
+    public sealed partial record Warning(string Message) : Result;
+
+    public sealed partial record Error(string Message) : Result;
+}
+```
+
+<details>
+
+<summary>Usage</summary>
+
+```cs
+var results = new Result[] { new Result.Ok(), /* ... */ }
+
+// N-Tuple extension method:
+var (oks, warnings, errors) = results.Partition();
+
+// Extension method with result selector:
+var warningAndErrorCount = results.Partition(resultSelector: (_, warnings, errors) => warnings.Count + errors.Count);
+```
+
+</details>
+
 [json-polymorphism-docs]: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism
