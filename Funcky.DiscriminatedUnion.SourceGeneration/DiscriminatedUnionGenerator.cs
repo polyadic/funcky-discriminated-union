@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Funcky.DiscriminatedUnion.SourceGeneration.Emitter;
@@ -32,8 +33,7 @@ public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
     {
         if (code.Any())
         {
-            var combinedCode = $"{GeneratedFileHeadersSource}{Environment.NewLine}{Environment.NewLine}" +
-                               $"{string.Join(Environment.NewLine, code)}";
+            var combinedCode = $"{GeneratedFileHeadersSource}\n\n{string.Join("\n", code)}";
             context.AddSource("DiscriminatedUnionGenerator.g.cs", combinedCode);
         }
     }

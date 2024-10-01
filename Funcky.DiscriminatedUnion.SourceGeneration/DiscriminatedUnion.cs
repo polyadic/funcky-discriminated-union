@@ -6,9 +6,10 @@ internal sealed record DiscriminatedUnion(
     TypeDeclarationSyntax Type,
     IReadOnlyList<TypeDeclarationSyntax> ParentTypes,
     string? Namespace,
-    string MethodVisibility,
+    string GeneratedMethodOrClassVisibility,
     string MatchResultTypeName,
-    IReadOnlyList<DiscriminatedUnionVariant> Variants);
+    IReadOnlyList<DiscriminatedUnionVariant> Variants,
+    bool GeneratePartitionExtension);
 
 internal sealed record DiscriminatedUnionVariant(
     TypeDeclarationSyntax Type,
