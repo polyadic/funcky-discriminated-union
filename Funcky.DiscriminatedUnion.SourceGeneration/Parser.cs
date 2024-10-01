@@ -38,7 +38,7 @@ internal static partial class Parser
             ParentTypes: typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>().ToList(),
             Namespace: FormatNamespace(typeSymbol),
             MatchResultTypeName: matchResultType ?? "TResult",
-            MethodVisibility: nonExhaustive ? "internal" : "public",
+            GeneratedMethodOrClassVisibility: nonExhaustive ? "internal" : "public",
             GeneratePartitionExtension: generatePartitionExtension,
             Variants: GetVariantTypeDeclarations(typeDeclaration, isVariant)
                 .Select(GetDiscriminatedUnionVariant(typeDeclaration, semanticModel, GenerateJsonDerivedTypeAttribute(typeSymbol)))

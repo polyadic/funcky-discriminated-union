@@ -39,9 +39,9 @@ internal static class Emitter
         writer.WriteLineInterpolated(FormatPartialTypeDeclaration(discriminatedUnion.Type));
         writer.OpenScope();
 
-        WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)};");
+        WriteGeneratedMethod(writer, $"{discriminatedUnion.GeneratedMethodOrClassVisibility} abstract {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)};");
         writer.WriteLine();
-        WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} abstract {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)};");
+        WriteGeneratedMethod(writer, $"{discriminatedUnion.GeneratedMethodOrClassVisibility} abstract {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)};");
 
         foreach (var variant in discriminatedUnion.Variants)
         {
@@ -54,7 +54,7 @@ internal static class Emitter
         using var scope = writer.AutoCloseScopes();
 
         writer.WriteLine(GeneratedCodeAttributeSource);
-        writer.WriteLineInterpolated($"{discriminatedUnion.MethodVisibility} static partial class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
+        writer.WriteLineInterpolated($"{discriminatedUnion.GeneratedMethodOrClassVisibility} static partial class {discriminatedUnion.Type.Identifier}EnumerableExtensions");
         writer.OpenScope();
 
         WriteTupleReturningPartitionExtension(discriminatedUnion, writer);
@@ -143,9 +143,9 @@ internal static class Emitter
             writer.WriteLineInterpolated(FormatPartialTypeDeclaration(variant.Type));
             writer.OpenScope();
 
-            WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
+            WriteGeneratedMethod(writer, $"{discriminatedUnion.GeneratedMethodOrClassVisibility} override {FormatMatchMethodDeclaration(discriminatedUnion.MatchResultTypeName, discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
             writer.WriteLine();
-            WriteGeneratedMethod(writer, $"{discriminatedUnion.MethodVisibility} override {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
+            WriteGeneratedMethod(writer, $"{discriminatedUnion.GeneratedMethodOrClassVisibility} override {FormatSwitchMethodDeclaration(discriminatedUnion.Variants)} => {FormatIdentifier(variant.ParameterName)}(this);");
         }
     }
 
