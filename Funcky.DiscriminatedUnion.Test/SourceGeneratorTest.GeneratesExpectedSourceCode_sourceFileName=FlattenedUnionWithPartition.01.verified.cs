@@ -6,32 +6,32 @@ namespace Funcky.DiscriminatedUnion.Test
 {
     partial record FlattenedUnionWithPartition
     {
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
         public abstract TResult Match<TResult>(global::System.Func<Keyword, TResult> keyword, global::System.Func<Integer, TResult> integer);
         
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
         public abstract void Switch(global::System.Action<Keyword> keyword, global::System.Action<Integer> integer);
         
         partial record Keyword
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override TResult Match<TResult>(global::System.Func<Keyword, TResult> keyword, global::System.Func<Integer, TResult> integer) => keyword(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override void Switch(global::System.Action<Keyword> keyword, global::System.Action<Integer> integer) => keyword(this);
         }
         
         partial record Integer
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override TResult Match<TResult>(global::System.Func<Keyword, TResult> keyword, global::System.Func<Integer, TResult> integer) => integer(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override void Switch(global::System.Action<Keyword> keyword, global::System.Action<Integer> integer) => integer(this);
         }
     }
     
-    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
     public static partial class FlattenedUnionWithPartitionEnumerableExtensions
     {
         public static (global::System.Collections.Generic.IReadOnlyList<FlattenedUnionWithPartition.Keyword> Keyword, global::System.Collections.Generic.IReadOnlyList<FlattenedUnionWithPartition.Integer> Integer) Partition(this global::System.Collections.Generic.IEnumerable<FlattenedUnionWithPartition> source)
