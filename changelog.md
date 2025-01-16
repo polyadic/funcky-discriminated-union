@@ -1,4 +1,7 @@
 # Changelog
+## 1.2.1
+* Fix `IEnumerable<YourType>` between the `<c>` tags
+
 ## 1.2.0
 * Add the `GeneratePartitionExtension` option to enable generation of a specialized `Partition` method.
 

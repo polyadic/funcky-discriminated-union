@@ -9,7 +9,7 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
     <PropertyGroup Label="NuGet Metadata">
-        <Version>1.2.0</Version>
+        <Version>1.2.1</Version>
         <PackageId>Funcky.DiscriminatedUnion</PackageId>
         <Authors>Polyadic</Authors>
         <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>

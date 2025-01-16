@@ -6,41 +6,41 @@ namespace Funcky.DiscriminatedUnion.Test.Sources
 {
     partial record UnionWithPartitionUsage
     {
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
         public abstract TResult Match<TResult>(global::System.Func<Success, TResult> success, global::System.Func<Warning, TResult> warning, global::System.Func<Error, TResult> error);
         
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
         public abstract void Switch(global::System.Action<Success> success, global::System.Action<Warning> warning, global::System.Action<Error> error);
         
         partial record Success
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override TResult Match<TResult>(global::System.Func<Success, TResult> success, global::System.Func<Warning, TResult> warning, global::System.Func<Error, TResult> error) => success(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override void Switch(global::System.Action<Success> success, global::System.Action<Warning> warning, global::System.Action<Error> error) => success(this);
         }
         
         partial record Warning
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override TResult Match<TResult>(global::System.Func<Success, TResult> success, global::System.Func<Warning, TResult> warning, global::System.Func<Error, TResult> error) => warning(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override void Switch(global::System.Action<Success> success, global::System.Action<Warning> warning, global::System.Action<Error> error) => warning(this);
         }
         
         partial record Error
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override TResult Match<TResult>(global::System.Func<Success, TResult> success, global::System.Func<Warning, TResult> warning, global::System.Func<Error, TResult> error) => error(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
             public override void Switch(global::System.Action<Success> success, global::System.Action<Warning> warning, global::System.Action<Error> error) => error(this);
         }
     }
     
-    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
     public static partial class UnionWithPartitionUsageEnumerableExtensions
     {
         public static (global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Success> Success, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Warning> Warning, global::System.Collections.Generic.IReadOnlyList<UnionWithPartitionUsage.Error> Error) Partition(this global::System.Collections.Generic.IEnumerable<UnionWithPartitionUsage> source)
