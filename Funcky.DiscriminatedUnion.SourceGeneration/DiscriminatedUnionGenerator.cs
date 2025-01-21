@@ -13,6 +13,7 @@ public sealed class DiscriminatedUnionGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        context.RegisterPostInitializationOutput(static context => context.AddSource("Microsoft.CodeAnalysis.EmbeddedAttribute.g.cs", EmbeddedAttributeSource));
         context.RegisterPostInitializationOutput(static context => context.AddSource("DiscriminatedUnionAttribute.g.cs", DiscriminatedUnionAttributeSource));
 
         var code = context.SyntaxProvider.CreateSyntaxProvider(static (node, _) => IsSyntaxTargetForGeneration(node), GetSemanticTargetForGeneration)
