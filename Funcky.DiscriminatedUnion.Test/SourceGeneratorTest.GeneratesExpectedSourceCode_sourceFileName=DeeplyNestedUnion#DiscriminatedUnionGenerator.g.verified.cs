@@ -14,18 +14,18 @@ partial interface IInterface
                 {
                     partial record NestedUnion
                     {
-                        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
                         public abstract TResult Match<TResult>(global::System.Func<Variant, TResult> variant);
                         
-                        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
                         public abstract void Switch(global::System.Action<Variant> variant);
                         
                         partial record Variant
                         {
-                            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+                            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
                             public override TResult Match<TResult>(global::System.Func<Variant, TResult> variant) => variant(this);
                             
-                            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+                            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
                             public override void Switch(global::System.Action<Variant> variant) => variant(this);
                         }
                     }

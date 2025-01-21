@@ -6,27 +6,27 @@ namespace Funcky.DiscriminatedUnion.Test
 {
     partial record SyntaxNodeFlattened
     {
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
         public abstract TResult Match<TResult>(global::System.Func<Keyword, TResult> keyword, global::System.Func<Integer, TResult> integer);
         
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
         public abstract void Switch(global::System.Action<Keyword> keyword, global::System.Action<Integer> integer);
         
         partial record Keyword
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
             public override TResult Match<TResult>(global::System.Func<Keyword, TResult> keyword, global::System.Func<Integer, TResult> integer) => keyword(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
             public override void Switch(global::System.Action<Keyword> keyword, global::System.Action<Integer> integer) => keyword(this);
         }
         
         partial record Integer
         {
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
             public override TResult Match<TResult>(global::System.Func<Keyword, TResult> keyword, global::System.Func<Integer, TResult> integer) => integer(this);
             
-            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+            [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
             public override void Switch(global::System.Action<Keyword> keyword, global::System.Action<Integer> integer) => integer(this);
         }
     }

@@ -4,18 +4,18 @@
 
 partial record UnionWithConflictingGenericType<TResult>
 {
-    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
     public abstract TMatchResult Match<TMatchResult>(global::System.Func<Variant, TMatchResult> variant);
     
-    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
     public abstract void Switch(global::System.Action<Variant> variant);
     
     partial record Variant
     {
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
         public override TMatchResult Match<TMatchResult>(global::System.Func<Variant, TMatchResult> variant) => variant(this);
         
-        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "1.2.1.0")]
+        [global::System.CodeDom.Compiler.GeneratedCode("Funcky.DiscriminatedUnion.SourceGeneration", "VERSION")]
         public override void Switch(global::System.Action<Variant> variant) => variant(this);
     }
 }
