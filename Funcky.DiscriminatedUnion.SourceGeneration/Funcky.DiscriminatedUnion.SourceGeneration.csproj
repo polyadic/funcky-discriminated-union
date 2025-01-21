@@ -36,8 +36,14 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+        <!-- Careful! Updating this means that you might break compatibility
+             with older .NET SDKs and older versions of Visual Studio!
+             See <https://docs.microsoft.com/en-us/visualstudio/extensibility/roslyn-version-support>
+             for a detailed compatibility table. -->
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
         <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
     </ItemGroup>
 </Project>
