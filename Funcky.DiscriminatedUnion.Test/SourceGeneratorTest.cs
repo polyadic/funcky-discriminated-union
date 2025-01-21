@@ -51,12 +51,11 @@ public sealed class SourceGeneratorTest
         => CSharpCompilation.Create(
             nameof(SourceGeneratorTest),
             syntaxTrees,
-            new[]
-            {
+            [
                 MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location),
-            },
+                MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location)
+            ],
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 }
