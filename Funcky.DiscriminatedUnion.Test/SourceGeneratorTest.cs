@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Funcky.DiscriminatedUnion.Test;
 
-[UsesVerify]
 public sealed class SourceGeneratorTest
 {
     [Theory]
