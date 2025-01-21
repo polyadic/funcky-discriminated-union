@@ -5,7 +5,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>11.0</LangVersion>
+        <LangVersion>13.0</LangVersion>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
     <PropertyGroup Label="NuGet Metadata">
@@ -35,12 +35,15 @@
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
-    <ItemGroup Label="Deterministic Builds and Source Link">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <ItemGroup>
+        <!-- Careful! Updating this means that you might break compatibility
+             with older .NET SDKs and older versions of Visual Studio!
+             See <https://docs.microsoft.com/en-us/visualstudio/extensibility/roslyn-version-support>
+             for a detailed compatibility table. -->
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
-        <PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+        <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
     </ItemGroup>
 </Project>
