@@ -12,7 +12,7 @@ public readonly struct CollectingInterpolatedStringHandler
 
     public CollectingInterpolatedStringHandler()
     {
-        _items = new List<object?>();
+        _items = [];
     }
 
     private readonly List<object?> _items;
