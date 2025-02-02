@@ -65,7 +65,7 @@ public sealed partial class SourceGeneratorTest
                 MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location),
             ],
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 }
