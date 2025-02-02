@@ -41,9 +41,11 @@ internal static class SourceCodeSnippets
 
     private static readonly AssemblyName GeneratorAssemblyName = typeof(DiscriminatedUnionGenerator).Assembly.GetName();
 
+#pragma warning disable SA1202
     public static readonly string GeneratedCodeAttributeSource = $"[global::System.CodeDom.Compiler.GeneratedCode(" +
         $"{Literal(GeneratorAssemblyName.Name)}, " +
         $"{Literal(GeneratorAssemblyName.Version.ToString())})]";
+#pragma warning restore SA1202
 
     public static class AttributeProperties
     {
