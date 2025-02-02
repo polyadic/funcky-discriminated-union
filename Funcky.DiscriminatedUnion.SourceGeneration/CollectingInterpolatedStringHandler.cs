@@ -5,6 +5,8 @@ namespace Funcky.DiscriminatedUnion.SourceGeneration;
 [InterpolatedStringHandler]
 public readonly struct CollectingInterpolatedStringHandler
 {
+    private readonly List<object?> _items;
+
     public CollectingInterpolatedStringHandler(int literalLength, int formattedCount)
     {
         _items = new List<object?>(formattedCount * 2);
@@ -12,10 +14,8 @@ public readonly struct CollectingInterpolatedStringHandler
 
     public CollectingInterpolatedStringHandler()
     {
-        _items = new List<object?>();
+        _items = [];
     }
-
-    private readonly List<object?> _items;
 
     public IEnumerable<object?> GetItems() => _items;
 

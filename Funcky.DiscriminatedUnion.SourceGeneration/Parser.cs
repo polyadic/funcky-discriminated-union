@@ -130,10 +130,9 @@ internal static partial class Parser
     private sealed class VariantCollectingVisitor : CSharpSyntaxWalker
     {
         private readonly Func<TypeDeclarationSyntax, bool> _isVariant;
+        private readonly List<TypeDeclarationSyntax> _variants = [];
 
         public VariantCollectingVisitor(Func<TypeDeclarationSyntax, bool> isVariant) => _isVariant = isVariant;
-
-        private readonly List<TypeDeclarationSyntax> _variants = new();
 
         public IReadOnlyList<TypeDeclarationSyntax> Variants => _variants;
 
