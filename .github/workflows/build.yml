@@ -8,6 +8,7 @@ on:
 
 env:
   DOTNET_NOLOGO: 1
+  TreatWarningsAsErrors: true
 
 jobs:
   build:
@@ -19,7 +20,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore /p:TreatWarningsAsErrors=true
+      run: dotnet build --configuration Release
     - name: Run Tests
       run: dotnet test --configuration Release --no-build
 

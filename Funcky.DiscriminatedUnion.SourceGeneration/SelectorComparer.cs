@@ -1,12 +1,9 @@
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
 
-internal sealed class SelectorComparer<TSource, TSelected> : IEqualityComparer<TSource>
+internal sealed class SelectorComparer<TSource, TSelected>(Func<TSource, TSelected> selector)
+    : IEqualityComparer<TSource>
 {
-    private readonly Func<TSource, TSelected> _selector;
+    public bool Equals(TSource x, TSource y) => EqualityComparer<TSelected>.Default.Equals(selector(x), selector(y));
 
-    public SelectorComparer(Func<TSource, TSelected> selector) => _selector = selector;
-
-    public bool Equals(TSource x, TSource y) => EqualityComparer<TSelected>.Default.Equals(_selector(x), _selector(y));
-
-    public int GetHashCode(TSource obj) => EqualityComparer<TSelected>.Default.GetHashCode(_selector(obj));
+    public int GetHashCode(TSource obj) => EqualityComparer<TSelected>.Default.GetHashCode(selector(obj));
 }

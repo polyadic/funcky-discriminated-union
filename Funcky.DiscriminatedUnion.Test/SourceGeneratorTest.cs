@@ -1,13 +1,16 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Funcky.DiscriminatedUnion.SourceGeneration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace Funcky.DiscriminatedUnion.Test;
 
-[UsesVerify]
-public sealed class SourceGeneratorTest
+public sealed partial class SourceGeneratorTest
 {
+    [GeneratedRegex("\"([\\d\\.]+)\"")]
+    private static partial Regex VersionStringRegex { get; }
+
     [Theory]
     [InlineData("LogicallyNestedUnionWithFlatten")]
     [InlineData("LogicallyAndSyntacticallyNestedUnion")]
@@ -40,8 +43,15 @@ public sealed class SourceGeneratorTest
         var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(await File.ReadAllTextAsync(filePath)));
         var driver = RunGenerator(compilation, out var outputCompilation);
         Assert.Empty(outputCompilation.GetDiagnostics());
-        await Verifier.Verify(driver).UseParameters(sourceFileName);
+        await Verifier.Verify(driver)
+            .UseParameters(sourceFileName)
+            .ScrubLinesWithReplace(ReplaceGeneratorVersion);
     }
+
+    private static string ReplaceGeneratorVersion(string line)
+        => line.Contains("global::System.CodeDom.Compiler.GeneratedCode")
+            ? VersionStringRegex.Replace(line, "\"VERSION\"")
+            : line;
 
     private static GeneratorDriver RunGenerator(CSharpCompilation compilation, out Compilation outputCompilation)
         => CSharpGeneratorDriver.Create(new DiscriminatedUnionGenerator())
@@ -51,12 +61,11 @@ public sealed class SourceGeneratorTest
         => CSharpCompilation.Create(
             nameof(SourceGeneratorTest),
             syntaxTrees,
-            new[]
-            {
+            [
                 MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
                 MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location),
-            },
+            ],
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 }
