@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<ItemGroup Label="Analyzers">
+		<PackageReference Include="Polyadic.CodeStyle" Version="1.1.0" PrivateAssets="all" />
+	</ItemGroup>
+</Project>

@@ -1,7 +1,7 @@
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.CodeDom.Compiler;
 using System.Text;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Funcky.DiscriminatedUnion.SourceGeneration.SourceCodeSnippets;
 
 namespace Funcky.DiscriminatedUnion.SourceGeneration;
@@ -11,7 +11,8 @@ internal static class Emitter
     public static string EmitDiscriminatedUnion(DiscriminatedUnion discriminatedUnion)
     {
         var stringBuilder = new StringBuilder();
-        var writer = new IndentedTextWriter(new StringWriter(stringBuilder));
+        using var stringWriter = new StringWriter(stringBuilder);
+        using var writer = new IndentedTextWriter(stringWriter);
 
         using (writer.AutoCloseScopes())
         {
