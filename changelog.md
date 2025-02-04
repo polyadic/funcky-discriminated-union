@@ -1,4 +1,8 @@
 # Changelog
+## 1.2.2
+* Mark the `[DiscriminatedUnion]` attribute with `[Embedded]` to avoid
+  compiler warnings when using `InternalsVisibleTo`.
+
 ## 1.2.1
 * Fix `IEnumerable<YourType>` between the `<c>` tags
 

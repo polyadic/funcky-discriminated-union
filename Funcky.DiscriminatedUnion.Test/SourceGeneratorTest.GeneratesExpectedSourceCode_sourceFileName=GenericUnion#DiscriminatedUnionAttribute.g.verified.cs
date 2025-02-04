@@ -4,6 +4,7 @@
 
 namespace Funcky
 {
+    [global::Microsoft.CodeAnalysis.Embedded]
     [global::System.Diagnostics.Conditional("Funcky_DiscriminatedUnion")]
     [global::System.AttributeUsage(global::System.AttributeTargets.Class)]
     internal sealed class DiscriminatedUnionAttribute : global::System.Attribute

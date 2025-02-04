@@ -34,7 +34,7 @@ public sealed partial class SourceGeneratorTest
         var compilation = CreateCompilation();
         var driver = RunGenerator(compilation, out var outputCompilation);
         Assert.Empty(outputCompilation.GetDiagnostics());
-        Assert.Single(driver.GetRunResult().GeneratedTrees);
+        Assert.All(driver.GetRunResult().GeneratedTrees, tree => Assert.EndsWith("Attribute.g.cs", tree.FilePath));
     }
 
     private static async Task Verify(string sourceFileName)
