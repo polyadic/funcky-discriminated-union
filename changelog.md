@@ -1,7 +1,9 @@
 # Changelog
 ## 1.2.2
-* Announce the retirement of this generator: C# gets native union types with .NET 11, and Funcky.DiscriminatedUnion is retired
-  together with Funcky 4.0.0. See [polyadic/funcky#900](https://github.com/polyadic/funcky/issues/900). No functional changes.
+* Final version: this generator is retired together with Funcky 4.0.0, because C# has native `union` types and `closed`
+  hierarchies since .NET 11. The readme carries the migration recipe. The package stays on NuGet for projects on the
+  Funcky 3.x line and receives no further changes. See [polyadic/funcky#900](https://github.com/polyadic/funcky/issues/900).
+  No functional changes.
 
 ## 1.2.1
 * Fix `IEnumerable<YourType>` between the `<c>` tags
