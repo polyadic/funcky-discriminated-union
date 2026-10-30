@@ -1,6 +1,12 @@
 # Funcky Discriminated Unions
 A source generator that generates `Match` methods for all your discriminated unions needs. ✨
 
+> [!IMPORTANT]
+> **This generator is retiring.** C# gets native `union` types and `closed` hierarchies with .NET 11, which cover what
+> `[DiscriminatedUnion]` generates today. Funcky.DiscriminatedUnion is retired together with the Funcky 4.0.0 release:
+> it receives no new features, and the final version stays on NuGet for the 3.x line but is not maintained afterwards.
+> Details and discussion: [polyadic/funcky#900](https://github.com/polyadic/funcky/issues/900).
+
 [![NuGet Version](https://img.shields.io/nuget/v/Funcky.DiscriminatedUnion)](https://www.nuget.org/packages/Funcky.DiscriminatedUnion)
 [![Build](https://github.com/polyadic/funcky-discriminated-union/workflows/Build/badge.svg)](https://github.com/polyadic/funcky-discriminated-union/actions?query=workflow%3ABuild)
 [![Licence: MIT](https://img.shields.io/badge/licence-MIT-green)](https://raw.githubusercontent.com/polyadic/funcky-discriminated-union/main/license-mit.txt)

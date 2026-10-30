@@ -9,12 +9,12 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
     <PropertyGroup Label="NuGet Metadata">
-        <Version>1.2.1</Version>
+        <Version>1.2.2</Version>
         <PackageId>Funcky.DiscriminatedUnion</PackageId>
         <Authors>Polyadic</Authors>
         <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/polyadic/funcky-discriminated-union</PackageProjectUrl>
-        <Description>A source generator that generates `Match` methods for all your discriminated unions needs. ✨</Description>
+        <Description>A source generator that generates `Match` methods for all your discriminated unions needs. ✨ Retiring: C# gets native union types with .NET 11, and this generator is retired together with Funcky 4.0.0 (see https://github.com/polyadic/funcky/issues/900).</Description>
         <PackageTags>Funcky Discriminated Tagged Union Algebraic</PackageTags>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
     </PropertyGroup>
