@@ -2,10 +2,23 @@
 A source generator that generates `Match` methods for all your discriminated unions needs. ✨
 
 > [!IMPORTANT]
-> **This generator is retiring.** C# gets native `union` types and `closed` hierarchies with .NET 11, which cover what
-> `[DiscriminatedUnion]` generates today. Funcky.DiscriminatedUnion is retired together with the Funcky 4.0.0 release:
-> it receives no new features, and the final version stays on NuGet for the 3.x line but is not maintained afterwards.
-> Details and discussion: [polyadic/funcky#900](https://github.com/polyadic/funcky/issues/900).
+> **This generator is retired.** C# has native `union` types and `closed` hierarchies since .NET 11, which cover what
+> `[DiscriminatedUnion]` generated. Funcky.DiscriminatedUnion retired together with the Funcky 4.0.0 release: this is
+> the final version, it stays on NuGet for projects on the Funcky 3.x line and receives no further changes, and the
+> repository is archived. Details and discussion: [polyadic/funcky#900](https://github.com/polyadic/funcky/issues/900).
+>
+> **Migrating:** mark the abstract base `closed` (or declare a `union`) instead of `[DiscriminatedUnion]`, and replace
+> the generated `Match` with a `switch` expression over the cases, which the compiler checks for exhaustiveness:
+>
+> ```cs
+> public abstract closed partial record Result<T> { /* the same nested cases */ }
+>
+> var resultOrFallback = result switch
+> {
+>     Result<int>.Ok ok => ok.Value,
+>     Result<int>.Error => 0,
+> };
+> ```
 
 [![NuGet Version](https://img.shields.io/nuget/v/Funcky.DiscriminatedUnion)](https://www.nuget.org/packages/Funcky.DiscriminatedUnion)
 [![Build](https://github.com/polyadic/funcky-discriminated-union/workflows/Build/badge.svg)](https://github.com/polyadic/funcky-discriminated-union/actions?query=workflow%3ABuild)
